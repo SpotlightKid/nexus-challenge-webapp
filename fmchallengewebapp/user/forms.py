@@ -64,10 +64,11 @@ class LoginForm(FlaskForm):
             self.password.errors.append('Invalid password')
             return False
 
-        if not self.user.active:
+        if not self.user.confirmed:
             self.username.errors.append('User not activated')
             return False
         return True
+
 
 class RegisterForm(FlaskForm):
     """User registration form."""
