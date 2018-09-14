@@ -1,0 +1,7 @@
+{% macro stylesheet_tag(name, type='text/css') -%}
+    <link rel="stylesheet" type="{{ type }}" href="{{ url_for('static', filename='css/{}.css'.format(name)) }}">
+{%- endmacro %}
+
+{% macro javascript_tag(name, type='text/javascript') -%}
+    <script type="{{ type }}" src="{{ url_for('static', filename='js/{}.js'.format(name)) }}">
+{%- endmacro %}
