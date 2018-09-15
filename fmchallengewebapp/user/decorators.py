@@ -1,5 +1,5 @@
-# project/decorators.py
-
+# -*- coding: utf-8 -*-
+"""User blueprint custom view decorators."""
 
 from functools import wraps
 
@@ -8,11 +8,13 @@ from flask_login import current_user
 
 
 def check_confirmed(func):
+    """View decorator to check if account of current user has been confirmed."""
     @wraps(func)
     def decorated_function(*args, **kwargs):
-        if current_user.confirmed is False:
+        if current_user.is_confirmed is False:
             flash('Please confirm your account!', 'warning')
             return redirect(url_for('user.unconfirmed'))
+
         return func(*args, **kwargs)
 
     return decorated_function

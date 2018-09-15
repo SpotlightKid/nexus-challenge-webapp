@@ -3,11 +3,11 @@
 {% block content %}
 <div class="container-narrow">
   <h1 class="mt-5">Forgot Your Password?</h1>
-  <br/ >
-  <form class="form-signin" role="form" method="post" action="">
+  <br/>
+  <form class="form-signin" id="resetPasswordForm" role="form" method="post" action="">
     {{ form.csrf_token }}
     <p>
-    {{ form.password(placeholder="password") }}
+      {{ form.password(placeholder="password") }}
       <span class="error">
         {% if form.password.errors %}
           {% for error in form.password.errors %}
@@ -17,7 +17,7 @@
       </span>
     </p>
     <p>
-    {{ form.confirm(placeholder="confirm") }}
+      {{ form.confirm(placeholder="confirm") }}
       <span class="error">
         {% if form.confirm.errors %}
           {% for error in form.confirm.errors %}

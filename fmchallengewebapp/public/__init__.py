@@ -1,3 +1,4 @@
 # -*- coding: utf-8 -*-
-"""The public module, including the homepage and user auth."""
+"""Blueprint for public section, including homepage and about page."""
+
 from . import views  # noqa

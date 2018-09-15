@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test forms."""
 
-from fmchallengewebapp.public.forms import LoginForm
-from fmchallengewebapp.user.forms import RegisterForm
+from fmchallengewebapp.user.forms import LoginForm, RegisterForm
 
 
 class TestRegisterForm:
@@ -36,7 +35,7 @@ class TestLoginForm:
 
     def test_validate_success(self, user):
         """Login successful."""
-        user.set_password('example')
+        user.password = 'example'
         user.save()
         form = LoginForm(username=user.username, password='example')
         assert form.validate() is True
@@ -51,7 +50,7 @@ class TestLoginForm:
 
     def test_validate_invalid_password(self, user):
         """Invalid password."""
-        user.set_password('example')
+        user.password = 'example'
         user.save()
         form = LoginForm(username=user.username, password='wrongpassword')
         assert form.validate() is False
@@ -59,10 +58,10 @@ class TestLoginForm:
 
     def test_validate_inactive_user(self, user):
         """Inactive user."""
-        user.active = False
-        user.set_password('example')
+        user.is_active = False
+        user.password = 'example'
         user.save()
         # Correct username and password, but user is not activated
         form = LoginForm(username=user.username, password='example')
         assert form.validate() is False
-        assert 'User not activated' in form.username.errors
+        assert 'User account deactivated' in form.username.errors

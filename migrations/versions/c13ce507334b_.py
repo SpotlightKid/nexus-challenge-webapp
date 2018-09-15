@@ -1,16 +1,15 @@
 """empty message
 
-Revision ID: 13585f7b6353
+Revision ID: c13ce507334b
 Revises: 
-Create Date: 2018-09-14 16:56:25.224773
+Create Date: 2018-09-15 18:32:40.386506
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = '13585f7b6353'
+revision = 'c13ce507334b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,15 +21,14 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=80), nullable=False),
     sa.Column('email', sa.String(length=80), nullable=False),
-    sa.Column('password', sa.Binary(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('hashed_password', sa.Binary(), nullable=True),
     sa.Column('first_name', sa.String(length=30), nullable=True),
     sa.Column('last_name', sa.String(length=30), nullable=True),
-    sa.Column('active', sa.Boolean(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('is_admin', sa.Boolean(), nullable=True),
-    sa.Column('admin', sa.Boolean(), nullable=False),
-    sa.Column('confirmed', sa.Boolean(), nullable=False),
+    sa.Column('is_confirmed', sa.Boolean(), nullable=False),
     sa.Column('confirmed_on', sa.DateTime(), nullable=True),
+    sa.Column('created_on', sa.DateTime(), nullable=False),
     sa.Column('password_reset_token', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),

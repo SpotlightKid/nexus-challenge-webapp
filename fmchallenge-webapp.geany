@@ -20,15 +20,22 @@ indent_mode=2
 [project]
 name=fmchallenge-webapp
 base_path=/home/chris/work/fmchallenge-webapp/
+description=
 
 [long line marker]
 long_line_behaviour=1
 long_line_column=100
 
 [files]
-current_page=0
-FILE_NAME_0=122;None;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2F.env;0;4
-FILE_NAME_1=0;HTML;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2Ffmchallengewebapp%2Ftemplates%2Fnav.html;0;4
+current_page=2
+FILE_NAME_0=221;None;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2F.env;0;4
+FILE_NAME_1=888;HTML;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2Ffmchallengewebapp%2Ftemplates%2Fusers%2Flogin.html;0;4
+FILE_NAME_2=779;reStructuredText;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2FREADME.rst;0;4
+FILE_NAME_3=0;Python;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2Ffmchallengewebapp%2Fcommands.py;0;4
+FILE_NAME_4=215;Python;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2Ffmchallengewebapp%2Fuser%2Fviews.py;0;4
+FILE_NAME_5=2462;Python;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2Ffmchallengewebapp%2Fuser%2Fforms.py;0;4
+FILE_NAME_6=259;Python;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2Ffmchallengewebapp%2Fuser%2Fdecorators.py;0;4
+FILE_NAME_7=0;Python;0;EUTF-8;0;1;1;%2Fhome%2Fchris%2Fwork%2Ffmchallenge-webapp%2Ffmchallengewebapp%2Fuser%2Fmodels.py;0;4
 
 [VTE]
 last_dir=/home/chris/work/fmchallenge-webapp

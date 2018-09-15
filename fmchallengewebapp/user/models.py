@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-"""User models."""
+"""User blueprint models."""
+
 import datetime as dt
 
 from flask_login import UserMixin
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from fmchallengewebapp.database import Column, Model, SurrogatePK, db, reference_col, relationship
 from fmchallengewebapp.extensions import bcrypt
@@ -25,38 +27,31 @@ class Role(SurrogatePK, Model):
         return '<Role({name})>'.format(name=self.name)
 
 
-class User(UserMixin, SurrogatePK, Model):
+class User(SurrogatePK, Model, UserMixin):
     """A user of the app."""
 
     __tablename__ = 'users'
     username = Column(db.String(80), unique=True, nullable=False)
     email = Column(db.String(80), unique=True, nullable=False)
-    #: The hashed password
-    password = Column(db.Binary(128), nullable=True)
-    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    hashed_password = Column(db.Binary(128), nullable=True)
     first_name = Column(db.String(30), nullable=True)
     last_name = Column(db.String(30), nullable=True)
-    active = Column(db.Boolean(), default=False)
+    is_active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
-    admin = db.Column(db.Boolean, nullable=False, default=False)
-    confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
+    created_on = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     password_reset_token = db.Column(db.String, nullable=True)
 
-    def __init__(self, username, email, password=None, confirmed=False, confirmed_on=None,
-                 password_reset_token=None, **kwargs):
-        """Create instance."""
-        db.Model.__init__(self, username=username, email=email, confirmed=confirmed,
-                          confirmed_on=confirmed_on, password_reset_token=password_reset_token,
-                          **kwargs)
-        if password:
-            self.set_password(password)
-        else:
-            self.password = None
+    @hybrid_property
+    def password(self):
+        """Get password."""
+        return self.hashed_password
 
-    def set_password(self, password):
+    @password.setter
+    def password(self, value):
         """Set password."""
-        self.password = bcrypt.generate_password_hash(password)
+        self.hashed_password = bcrypt.generate_password_hash(value)
 
     def check_password(self, value):
         """Check password."""

@@ -3,7 +3,6 @@
 
 import datetime
 import os
-from glob import glob
 from subprocess import call
 
 import click
@@ -14,17 +13,19 @@ from werkzeug.exceptions import MethodNotAllowed, NotFound
 from .database import db
 from .user.models import User
 
-
 HERE = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.join(HERE, os.pardir)
 TEST_PATH = os.path.join(PROJECT_ROOT, 'tests')
 
 
-@click.command()
-def test():
+@click.command(context_settings=dict(
+    ignore_unknown_options=True,
+))
+@click.argument('pytest_args', nargs=-1, type=click.UNPROCESSED)
+def test(pytest_args):
     """Run the tests."""
     import pytest
-    rv = pytest.main([TEST_PATH, '--verbose'])
+    rv = pytest.main([TEST_PATH] + list(pytest_args))
     exit(rv)
 
 
@@ -33,16 +34,9 @@ def test():
               help='Fix imports using isort, before linting')
 def lint(fix_imports):
     """Lint and check code style with flake8 and isort."""
-    skip = ['node_modules', 'requirements']
-    root_files = glob('*.py')
-    root_directories = [
-        name for name in next(os.walk('.'))[1] if not name.startswith('.')]
-    files_and_directories = [
-        arg for arg in root_files + root_directories if arg not in skip]
-
     def execute_tool(description, *args):
         """Execute a checking tool with its arguments."""
-        command_line = list(args) + files_and_directories
+        command_line = list(args)
         click.echo('{}: {}'.format(description, ' '.join(command_line)))
         rv = call(command_line)
         if rv != 0:
@@ -50,6 +44,7 @@ def lint(fix_imports):
 
     if fix_imports:
         execute_tool('Fixing import order', 'isort', '-rc')
+
     execute_tool('Checking code style', 'flake8')
 
 
@@ -133,26 +128,40 @@ def urls(url, order):
 
 
 @click.command()
+@with_appcontext
 def create_db():
     """Creates the db tables."""
     db.create_all()
 
 
 @click.command()
+@with_appcontext
 def drop_db():
     """Drops the db tables."""
     db.drop_all()
 
 
 @click.command()
-def create_admin():
+@click.option('--name', '-n', default='admin', prompt=True, help='Username for admin account')
+@click.password_option()
+@with_appcontext
+def create_admin(name, password):
     """Creates the admin user."""
-    db.session.add(User.create(
-        username="admin",
-        email="admin@example.com",
-        password="admin",
-        admin=True,
-        confirmed=True,
-        confirmed_on=datetime.datetime.now())
-    )
-    db.session.commit()
+    user = User.query.filter_by(username=name).first()
+    if user:
+        if click.confirm("User '{}' already exists. Update password?".format(name)):
+            user.update(password=password)
+            click.echo('Password updated.')
+        else:
+            click.echo('User unchanged.')
+    else:
+        User.create(
+            username=name,
+            email='{}@example.com'.format(name),
+            password=password,
+            is_admin=True,
+            is_active=True,
+            is_confirmed=True,
+            confirmed_on=datetime.datetime.now()
+        )
+        click.echo("User '{}' created.".format(name))

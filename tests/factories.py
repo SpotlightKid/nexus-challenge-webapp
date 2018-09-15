@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Factories to help in tests."""
-from factory import PostGenerationMethodCall, Sequence
+
+from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 
 from fmchallengewebapp.database import db
@@ -22,8 +23,8 @@ class UserFactory(BaseFactory):
 
     username = Sequence(lambda n: 'user{0}'.format(n))
     email = Sequence(lambda n: 'user{0}@example.com'.format(n))
-    password = PostGenerationMethodCall('set_password', 'example')
-    active = True
+    is_active = True
+    is_confirmed = True
 
     class Meta:
         """Factory configuration."""

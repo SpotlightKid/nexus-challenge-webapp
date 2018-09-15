@@ -4,7 +4,7 @@
 <div class="container-narrow">
   <h1 class="mt-5">Please login</h1>
   <br/>
-  <form class="form-login" role="form" method="post" action="">
+  <form class="form-signin" id="loginForm" role="form" method="post" action="">
     {{ form.csrf_token }}
     <p>
       {{ form.username(placeholder="username") }}
@@ -17,7 +17,7 @@
       </span>
     </p>
     <p>
-    {{ form.password(placeholder="password") }}
+      {{ form.password(placeholder="password") }}
       <span class="error">
         {% if form.password.errors %}
           {% for error in form.password.errors %}

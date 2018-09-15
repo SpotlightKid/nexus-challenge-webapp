@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Extensions module. Each extension is initialized in the app factory located in app.py."""
+"""Flask extensions instantiation.
+
+Each extension is initialized in the app factory located in app.py.
+
+"""
+
 from flask_bcrypt import Bcrypt
 from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
@@ -16,5 +21,4 @@ db = SQLAlchemy()
 mail = Mail()
 migrate = Migrate()
 cache = Cache()
-#debug_toolbar = DebugToolbarExtension()
-debug_toolbar = None
+debug_toolbar = DebugToolbarExtension()

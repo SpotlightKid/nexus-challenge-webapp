@@ -2,7 +2,9 @@
 """Functional tests using WebTest.
 
 See: http://webtest.readthedocs.org/
+
 """
+
 from flask import url_for
 
 from fmchallengewebapp.user.models import User
@@ -34,9 +36,9 @@ class TestLoggingIn:
         form['password'] = 'myprecious'
         # Submits
         res = form.submit().follow()
-        res = testapp.get(url_for('public.logout')).follow()
+        res = testapp.get(url_for('user.logout')).follow()
         # sees alert
-        assert 'You are logged out.' in res
+        assert 'You were logged out.' in res
 
     def test_sees_error_message_if_password_is_incorrect(self, user, testapp):
         """Show error if password is incorrect."""
@@ -90,7 +92,7 @@ class TestRegistering:
     def test_sees_error_message_if_passwords_dont_match(self, user, testapp):
         """Show error if passwords don't match."""
         # Goes to registration page
-        res = testapp.get(url_for('public.register'))
+        res = testapp.get(url_for('user.register'))
         # Fills out form, but passwords don't match
         form = res.forms['registerForm']
         form['username'] = 'foobar'
@@ -104,10 +106,10 @@ class TestRegistering:
 
     def test_sees_error_message_if_user_already_registered(self, user, testapp):
         """Show error if user already registered."""
-        user = UserFactory(active=True)  # A registered user
+        user = UserFactory(is_active=True)  # A registered user
         user.save()
         # Goes to registration page
-        res = testapp.get(url_for('public.register'))
+        res = testapp.get(url_for('user.register'))
         # Fills out form, but username is already registered
         form = res.forms['registerForm']
         form['username'] = user.username

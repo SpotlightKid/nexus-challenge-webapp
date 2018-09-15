@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Public forms."""
-from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField
-from wtforms.validators import DataRequired
+"""Public blueprint forms."""
+
+from flask_wtf import FlaskForm  # noqa: F401
+from wtforms.validators import DataRequired  # noqa: F401
 
 # nothing here yet...
