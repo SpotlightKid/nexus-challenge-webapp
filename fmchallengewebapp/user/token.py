@@ -17,5 +17,6 @@ def confirm_token(token, expiration=3600):
     try:
         return serializer.loads(token, salt=current_app.config['SECURITY_PASSWORD_SALT'],
                                 max_age=expiration)
-    except BadData:
+    except BadData as exc:
+        current_app.logger.warning("Invalid token: %s", exc)
         return False

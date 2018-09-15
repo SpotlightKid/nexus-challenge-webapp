@@ -3,13 +3,13 @@
 
 import datetime
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from fmchallengewebapp.extensions import login_manager
 
 from .decorators import check_confirmed
-from .email import send_email
+from .email import start_send_email_task
 from .forms import ChangePasswordForm, ForgotForm, LoginForm, RegisterForm
 from .models import User
 from .token import confirm_token, generate_confirmation_token
@@ -36,6 +36,13 @@ def register():
     form = RegisterForm(request.form)
 
     if form.validate_on_submit():
+        token = generate_confirmation_token(form.email.data)
+        confirm_url = url_for('user.confirm_email', token=token, _external=True)
+        html = render_template('users/activate.html', confirm_url=confirm_url)
+        subject = 'Please confirm your email'
+        start_send_email_task(form.email.data, subject, html)
+        flash('A confirmation email has been sent via email.', 'success')
+
         user = User.create(
             username=form.username.data,
             email=form.email.data,
@@ -43,14 +50,7 @@ def register():
             is_active=True,
             is_confirmed=False
         )
-        token = generate_confirmation_token(user.email)
-        confirm_url = url_for('user.confirm_email', token=token, _external=True)
-        html = render_template('users/activate.html', confirm_url=confirm_url)
-        subject = 'Please confirm your email'
-        send_email(user.email, subject, html)
         login_user(user)
-
-        flash('A confirmation email has been sent via email.', 'success')
         return redirect(url_for('user.unconfirmed'))
 
     return render_template('users/register.html', form=form)
@@ -80,7 +80,7 @@ def logout():
     """Handle use logout."""
     logout_user()
     flash('You were logged out.', 'success')
-    return redirect(url_for('user.login'))
+    return redirect(url_for('public.home'))
 
 
 @blueprint.route('/profile', methods=['GET', 'POST'])
@@ -105,21 +105,31 @@ def profile():
 
 
 @blueprint.route('/confirm/<token>')
-@login_required
 def confirm_email(token):
     """Handle request from confirmation email link."""
-    if current_user.is_confirmed:
-        flash('Account already confirmed. Please login.', 'success')
-        return redirect(url_for('public.home'))
-
-    email = confirm_token(token)
-    user = User.query.filter_by(email=current_user.email).first_or_404()
-
-    if user.email == email:
-        user.update(is_confirmed=True, confirmed_on=datetime.datetime.now())
-        flash('You have confirmed your account. Thanks!', 'success')
+    if not current_user.is_anonymous and current_user.is_confirmed:
+        flash('Account already confirmed.', 'success')
     else:
-        flash('The confirmation link is invalid or has expired.', 'danger')
+        max_age = current_app.config.get('REG_TOKEN_MAX_AGE', 3600 * 24 * 3)
+        email = confirm_token(token, expiration=max_age)
+
+        if email:
+            if not current_user.is_anonymous and email != current_user.email:
+                flash('Confirmation invalid for current user. Log out and try again', 'danger')
+                redirect_to = 'public.home'
+            else:
+                user = User.query.filter_by(email=email).first_or_404()
+
+                if user.is_confirmed:
+                    flash('Account already confirmed.', 'success')
+                else:
+                    user.update(is_confirmed=True, confirmed_on=datetime.datetime.now())
+                    flash('You have confirmed your account. Thanks!', 'success')
+
+                if current_user.is_anonymous:
+                    login_user(user)
+        else:
+            flash('The confirmation link is invalid or has expired.', 'danger')
 
     return redirect(url_for('public.home'))
 
@@ -131,7 +141,6 @@ def unconfirmed():
     if current_user.is_confirmed:
         return redirect(url_for('public.home'))
 
-    flash('Please confirm your account!', 'warning')
     return render_template('users/unconfirmed.html')
 
 
@@ -143,7 +152,7 @@ def resend_confirmation():
     confirm_url = url_for('user.confirm_email', token=token, _external=True)
     html = render_template('users/activate.html', confirm_url=confirm_url)
     subject = 'Please confirm your email'
-    send_email(current_user.email, subject, html)
+    start_send_email_task(current_user.email, subject, html)
     flash('A new confirmation email has been sent.', 'success')
     return redirect(url_for('user.unconfirmed'))
 
