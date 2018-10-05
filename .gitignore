@@ -58,3 +58,6 @@ env/
 
 # Development database
 *.db
+
+# Geany project file
+*.geany
