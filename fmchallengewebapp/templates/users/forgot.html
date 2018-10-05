@@ -1,26 +1,17 @@
-{% extends "layout.html" %}
-
+{% extends "base.html" %}
+{% from 'macros.html' import form_field %}
 {% block content %}
-<div class="container-narrow">
-  <h1 class="mt-5">Forgot Your Password?</h1>
-  <br/>
-  <form class="form-signin" id="forgotPasswordForm" role="form" method="post" action="">
+<h1 class="mt-5">Forgot Your Password?</h1>
+
+<h2>Enter email address you registered with:</h2>
+<form class="form-signin" id="forgotPasswordForm" role="form" method="post" action="">
     {{ form.csrf_token }}
-    <p>
-      {{ form.email(placeholder="email") }}
-      <span class="error">
-        {% if form.email.errors %}
-          {% for error in form.email.errors %}
-            {{ error }}
-          {% endfor %}
-        {% endif %}
-      </span>
-    </p>
-    <button class="btn btn-success" type="submit">Reset your password</button>
-  </form>
-  <ul>
+    {{ form_field(form.email, False) }}
+    <button type="submit">Reset Password!</button>
+</form>
+<br/>
+<ul>
   <li>Back to <a href="{{ url_for('user.login') }}">login</a></li>
   <li>Need to <a href="{{ url_for('user.register') }}">register</a>?</li>
-  </ul>
-</div>
+</ul>
 {% endblock %}

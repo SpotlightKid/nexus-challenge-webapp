@@ -3,7 +3,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import Email, EqualTo, InputRequired, Length
 
 from .models import User
 
@@ -11,11 +11,11 @@ from .models import User
 class RegisterForm(FlaskForm):
     """User account registration form."""
 
-    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=25)])
-    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=40)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=40)])
+    username = StringField('Username', validators=[InputRequired(), Length(min=3, max=25)])
+    email = StringField('Email', validators=[InputRequired(), Email(), Length(min=6, max=40)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=40)])
     confirm = PasswordField('Repeat password',
-        validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+        validators=[InputRequired(), EqualTo('password', message='Passwords must match')])
 
     def validate(self):
         """Validate the form."""
@@ -39,8 +39,8 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     """Login authentication form."""
 
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField('Username', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
 
     def __init__(self, *args, **kwargs):
         """Create instance."""
@@ -77,7 +77,7 @@ class ForgotForm(FlaskForm):
     """Forgotten password reset request form."""
 
     email = StringField('Email',
-        validators=[DataRequired(), Email(message=None), Length(min=6, max=255)])
+        validators=[InputRequired(), Email(message=None), Length(min=6, max=255)])
 
     def validate(self):
         """Validate that a user with given email exists."""
@@ -96,6 +96,6 @@ class ForgotForm(FlaskForm):
 class ChangePasswordForm(FlaskForm):
     """Change password form."""
 
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=255)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=255)])
     confirm = PasswordField('Repeat password',
-        validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
+        validators=[InputRequired(), EqualTo('password', message='Passwords must match')])

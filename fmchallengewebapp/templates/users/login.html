@@ -1,37 +1,16 @@
-{% extends "layout.html" %}
-
+{% extends "base.html" %}
+{% from 'macros.html' import form_field %}
 {% block content %}
-<div class="container-narrow">
-  <h1 class="mt-5">Please login</h1>
-  <br/>
-  <form class="form-signin" id="loginForm" role="form" method="post" action="">
-    {{ form.csrf_token }}
-    <p>
-      {{ form.username(placeholder="username") }}
-      <span class="error">
-        {% if form.username.errors %}
-          {% for error in form.username.errors %}
-            {{ error }}
-          {% endfor %}
-        {% endif %}
-      </span>
-    </p>
-    <p>
-      {{ form.password(placeholder="password") }}
-      <span class="error">
-        {% if form.password.errors %}
-          {% for error in form.password.errors %}
-            {{ error }}
-          {% endfor %}
-        {% endif %}
-      </span>
-    </p>
-    <button class="btn btn-success" type="submit">Sign in!</button>
-    <br /><br />
-    <ul>
-    <li>Need to <a href="{{ url_for('user.register') }}">Register</a>?</li>
-    <li><a href="{{ url_for('user.forgot') }}">Forgot</a> your password?</li>
-    </ul>
-  </form>
-</div>
+<h1 class="mt-5">Please sign in:</h1>
+<form class="form-signin" id="loginForm" role="form" method="post" action="">
+  {{ form.csrf_token }}
+  {{ form_field(form.username, False) }}
+  {{ form_field(form.password, False) }}
+  <button type="submit">Sign in!</button>
+</form>
+<br/>
+<ul>
+  <li>Need to <a href="{{ url_for('user.register') }}">Register</a>?</li>
+  <li><a href="{{ url_for('user.forgot') }}">Forgot</a> your password?</li>
+</ul>
 {% endblock %}

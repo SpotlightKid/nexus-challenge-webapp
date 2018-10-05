@@ -1,7 +1,38 @@
 {% macro stylesheet_tag(name, type='text/css') -%}
-    <link rel="stylesheet" type="{{ type }}" href="{{ url_for('static', filename='css/{}.css'.format(name)) }}">
+    <link rel="stylesheet" type="{{ type }}" href="{{ url_for('static', filename='css/{}.css'.format(name)) }}" />
 {%- endmacro %}
 
 {% macro javascript_tag(name, type='text/javascript') -%}
-    <script type="{{ type }}" src="{{ url_for('static', filename='js/{}.js'.format(name)) }}">
+    <script type="{{ type }}" src="{{ url_for('static', filename='js/{}.js'.format(name)) }}" />
+{%- endmacro %}
+
+{% macro form_field(field, label=True) -%}
+    <p>
+      {% if label %}{{ field.label }}{% endif %}
+      {{ field(placeholder=field.description or ('' if label else field.label.text)) }}
+      <span class="error">
+        {% if field.errors %}
+          {% for error in field.errors %}
+            {{ error }}
+          {% endfor %}
+        {% endif %}
+      </span>
+    </p>
+{%- endmacro %}
+
+{# Renders checkbox fields
+    Params:
+        field - WTForm field (this isn't checked, but you should put only BooleanFields here.
+        kwargs - pass any arguments you want in order to put them into the html attributes.
+        There are few aliases: for - for_, class - class_, class__ - class_
+
+    Example usage:
+        {{ macros.render_checkbox_field(form.remember_me) }}
+#}
+{% macro checkbox_field(field) -%}
+    <p class="checkbox">
+      <label>
+        {{ field(type='checkbox', **kwargs) }} {{ field.label }}
+      </label>
+    </p>
 {%- endmacro %}

@@ -19,6 +19,10 @@ Flask-Migrate==2.2.1
 # Mail
 Flask-Mail==0.9.1
 
+# Markdown filter & in-page editor
+Flask-Misaka==0.4.1
+Flask-PageDown==0.2.2
+
 # Forms
 Flask-WTF==0.14.2
 WTForms==2.2.1
@@ -38,3 +42,8 @@ Flask-DebugToolbar==0.10.1
 
 # Environment variable parsing
 environs==4.0.0
+
+# Web & API clients
+requests==2.19.1
+internetarchive==1.7.3
+#openlibrary-client==0.0.18

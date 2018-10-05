@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Public blueprint views."""
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_user
 
 from fmchallengewebapp.user.forms import LoginForm
@@ -24,11 +24,11 @@ def home():
         else:
             flash_errors(form)
 
-    return render_template('public/home.html', login_form=form)
+    return render_template('public/home.html', page_title='Start', login_form=form)
 
 
 @blueprint.route('/about/')
 def about():
     """About page."""
     form = LoginForm(request.form)
-    return render_template('public/about.html', login_form=form)
+    return render_template('public/about.html', page_title='About', login_form=form)

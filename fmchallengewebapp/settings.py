@@ -35,3 +35,23 @@ MAIL_USERNAME = env.str('APP_MAIL_USERNAME')
 MAIL_PASSWORD = env.str('APP_MAIL_PASSWORD')
 
 MAIL_DEFAULT_SENDER = env.str('APP_MAIL_DEFAULT_SENDER', default='fmchallenge@osamc.de')
+
+SITE_AUTHOR = "Open Source Audio Meeting Cologne"
+SITE_TITLE = "Open Source Music FM Synthesizer Challenge"
+SITE_URL = "https://fmchallenge.osamc.de/"
+SITE_EMAIL = "fmchallenge@osamc.de"
+SITE_DESCRIPTION = "Let's create awesome music with Open Source FM Synthesizers!"
+NAVIGATION_LINKS = (
+    ("/", "The Challenge"),
+    ("/rules/", "Rules"),
+    ("/submit/", "Enter"),
+    ("/vote/", "Voting"),
+    ("/fmsynths/", "FM Synths"),
+    ("mailto:fmchallenge@osamc.de", "Contact"),
+    #("/blog/", "Blog"),
+    #("/rss.xml", "RSS feed"),
+)
+SOCIAL_BUTTONS_CODE = (
+    'https://twitter.com/osamCologne',
+)
+

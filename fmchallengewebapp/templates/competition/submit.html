@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from 'macros.html' import checkbox_field, form_field %}
+
+{% block js_bottom %}
+<!-- Flask-PageDown Markdown in-line editor support -->
+{{ pagedown.include_pagedown() }}
+{% endblock %}
+
+{% block content %}
+<h1 class="mt-5">Submit Competition Entry:</h1>
+<form class="form-submit-entry" id="submitEntryForm" role="form" method="post" action="">
+  {{ form.csrf_token }}
+  {{ form_field(form.title) }}
+  {{ form_field(form.artist) }}
+  {{ form_field(form.url) }}
+  {{ form_field(form.description) }}
+  {{ form_field(form.production_details) }}
+  <button type="submit">{{ submit_label }}</button>
+</form>
+<br/>
+<p class="no-emphasis">In the next step, you can review your entry and submit it or
+  leave it as a draft and update and submit it later.</p>
+{% endblock %}

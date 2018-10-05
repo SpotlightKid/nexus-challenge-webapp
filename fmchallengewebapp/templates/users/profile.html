@@ -1,40 +1,17 @@
-{% extends "layout.html" %}
-
+{% extends "base.html" %}
+{% from 'macros.html' import form_field %}
 {% block content %}
-<div class="container-narrow">
-  <h1 class="mt-5">Your Profile</h1>
-  <br/>
+<h1 class="mt-5">Your Profile</h1>
 
-  {% if current_user.is_authenticated %}
-    <p>Email: <strong>{{current_user.email}}</strong></p>
-  {% endif %}
+{% if current_user.is_authenticated %}
+  <p>Email: <strong>{{current_user.email}}</strong></p>
+{% endif %}
 
-  <h2>Change Password</h2>
-  <br>
-  <form class="form-reset" role="form" method="post" action="">
-    {{ form.csrf_token }}
-    <p>
-      {{ form.password(placeholder="password") }}
-      <span class="error">
-        {% if form.password.errors %}
-          {% for error in form.password.errors %}
-            {{ error }}
-          {% endfor %}
-        {% endif %}
-      </span>
-    </p>
-    <p>
-      {{ form.confirm(placeholder="confirm") }}
-      <span class="error">
-        {% if form.confirm.errors %}
-          {% for error in form.confirm.errors %}
-            {{ error }}
-          {% endfor %}
-        {% endif %}
-      </span>
-    </p>
-    <button class="btn btn-success" type="submit">Update</button>
-  </form>
-</div>
-
+<h2>Change Password:</h2>
+<form class="form-reset" role="form" method="post" action="">
+  {{ form.csrf_token }}
+  {{ form_field(form.password, False) }}
+  {{ form_field(form.confirm, False) }}
+  <button type="submit">Update Password!</button>
+</form>
 {% endblock %}
