@@ -101,9 +101,7 @@ setup(
     description="Dynamic part of the web site for the Open Source FM Synthesizer Challenge",
     classifiers=classifiers,
     long_description=read('README.rst'),
-    packages=[
-        'fmchallengewebapp',
-    ],
+    packages=setuptools.find_packages(),
     include_package_data=True,
     install_requires=install_requires,
     tests_require=tests_require,

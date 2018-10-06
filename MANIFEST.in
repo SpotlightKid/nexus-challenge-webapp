@@ -1,0 +1,17 @@
+include autoapp.py
+include CHANGELOG.rst LICENSE README.rst
+include env.example
+include Makefile
+include requirements.txt
+include tox.ini pytest.ini
+
+graft fmchallengewebapp/static
+graft fmchallengewebapp/templates
+graft migrations
+graft requirements
+
+recursive-include tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
+recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif
