@@ -46,4 +46,3 @@ environs==4.0.0
 # Web & API clients
 requests==2.19.1
 internetarchive==1.7.3
-#openlibrary-client==0.0.18

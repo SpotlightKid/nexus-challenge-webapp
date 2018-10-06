@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Helper utilities and decorators."""
 
+from posixpath import basename
+from urllib.parse import urlparse
+
 from flask import current_app, flash
 
 
@@ -25,3 +28,16 @@ def inject_site_info():
         site_url=current_app.config.get('SITE_URL'),
         site_author=current_app.config.get('SITE_AUTHOR'),
     )
+
+
+def format_duration(sec):
+    return "%02i:%02i" % (int(sec / 60), sec % 60)
+
+
+def canonify_track_url(url):
+    track_id = url.strip()
+    if track_id.startswith(('http', 'archive.org')):
+        urlparts = urlparse(track_id)
+        track_id = basename(urlparts.path)
+    url = 'https://archive.org/details/' + track_id
+    return url, track_id

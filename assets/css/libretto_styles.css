@@ -544,11 +544,29 @@ tr:hover {
     background: #a09a92;
 }
 
+.flask-pagedown-preview {
+    font-size: 0.85em;
+    border-width: 1px;
+    background: url(../img/previewbg.gif);
+    color: #333;
+    margin: 1em 0px;
+    padding: 0.5em 1em;
+}
+
+div.flask-markdown {
+    font-size: 0.85em;
+    border-width: 1px;
+    background: #eee;
+    color: #333;
+    margin: 1em 0px;
+    padding: 0.5em 1em;
+}
 
 /*--------------------------------------------------------------
 4.0 Forms
 --------------------------------------------------------------*/
 button,
+a.btn,
 input,
 select,
 textarea {
@@ -561,6 +579,7 @@ textarea {
 }
 
 button,
+a.btn,
 html input[type="button"],
 input[type="reset"],
 input[type="submit"] {
@@ -673,6 +692,7 @@ form p {
 }
 
 input[type="submit"],
+a.btn,
 button {
     background: #a09a92;
     border: 1px solid #eae9e6;
@@ -687,6 +707,7 @@ button {
 }
 
 input[type="submit"]:hover,
+a.btn:hover,
 button:hover {
     background: #a09a92;
     color: #faf9f5;
@@ -694,6 +715,7 @@ button:hover {
 }
 
 input[type="submit"]:active,
+a.btn.active,
 button:active {
     background: #363431;
     outline: 5px solid #363431;

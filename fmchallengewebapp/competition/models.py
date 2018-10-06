@@ -9,30 +9,27 @@ from fmchallengewebapp.database import Column, Model, SurrogatePK, db, reference
 
 
 class CompetitionEntry(SurrogatePK, Model):
-    """An entyr submitted into the competition."""
+    """An entry submitted into the competition."""
 
     __tablename__ = 'competition_entries'
-    title = Column(db.String(80), unique=True, nullable=False)
-    artist = Column(db.String(80), nullable=False)
-    url = Column(db.String(80), nullable=False)
-    description = Column(db.String(500))
-    production_details = Column(db.String(500))
+    title = Column(db.String(100), nullable=False)
+    artist = Column(db.String(100), nullable=False)
+    url = Column(db.String(255), nullable=False)
+    description = Column(db.String(1000))
+    production_details = Column(db.String(1000))
 
     is_published = db.Column(db.Boolean, nullable=False, default=False)
     is_approved = db.Column(db.Boolean, nullable=False, default=False)
     created_on = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
-    published_on = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    last_modified_on = Column(db.DateTime, nullable=False)
+    published_on = Column(db.DateTime)
 
     user_id = reference_col('users', nullable=True)
     user = relationship('User', backref='competition_entries')
 
-    def __init__(self, name, **kwargs):
-        """Create instance."""
-        db.Model.__init__(self, name=name, **kwargs)
-
     def __repr__(self):
         """Represent instance as a unique string."""
-        return '<Role({name})>'.format(name=self.name)
+        return '<CompetitionEntry({artist} - {title})>'.format(artist=self.artist, title=self.title)
 
 # ~    @hybrid_property
 # ~    def password(self):

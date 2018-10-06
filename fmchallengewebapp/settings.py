@@ -55,3 +55,6 @@ SOCIAL_BUTTONS_CODE = (
     'https://twitter.com/osamCologne',
 )
 
+# Competition parameters
+MIN_TRACK_LENGTH = 60.0
+MAX_TRACK_LENGTH = 300.0

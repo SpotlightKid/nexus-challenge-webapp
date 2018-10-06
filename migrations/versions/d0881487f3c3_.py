@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 2068f9044a03
+Revision ID: d0881487f3c3
 Revises: 
-Create Date: 2018-10-05 03:25:23.723716
+Create Date: 2018-10-06 02:52:06.731128
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2068f9044a03'
+revision = 'd0881487f3c3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,18 +37,19 @@ def upgrade():
     )
     op.create_table('competition_entries',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('title', sa.String(length=80), nullable=False),
-    sa.Column('artist', sa.String(length=80), nullable=False),
-    sa.Column('url', sa.String(length=80), nullable=False),
-    sa.Column('description', sa.String(length=500), nullable=True),
-    sa.Column('production_details', sa.String(length=500), nullable=True),
+    sa.Column('title', sa.String(length=100), nullable=False),
+    sa.Column('artist', sa.String(length=100), nullable=False),
+    sa.Column('url', sa.String(length=255), nullable=False),
+    sa.Column('description', sa.String(length=1000), nullable=True),
+    sa.Column('production_details', sa.String(length=1000), nullable=True),
     sa.Column('is_published', sa.Boolean(), nullable=False),
+    sa.Column('is_approved', sa.Boolean(), nullable=False),
     sa.Column('created_on', sa.DateTime(), nullable=False),
-    sa.Column('published_on', sa.DateTime(), nullable=False),
+    sa.Column('last_modified_on', sa.DateTime(), nullable=False),
+    sa.Column('published_on', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('title')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('roles',
     sa.Column('id', sa.Integer(), nullable=False),

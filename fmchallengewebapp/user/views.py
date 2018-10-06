@@ -66,7 +66,7 @@ def login():
         if user and user.check_password(request.form['password']):
             login_user(user)
             flash('You are logged in.', 'success')
-            return redirect(url_for('public.home'))
+            return redirect(url_for('competition.view_entry'))
         else:
             flash('Invalid email and/or password.', 'danger')
             return render_template('users/login.html', form=form)
