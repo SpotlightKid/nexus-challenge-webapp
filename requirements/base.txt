@@ -44,5 +44,4 @@ Flask-DebugToolbar==0.10.1
 environs==4.0.0
 
 # Web & API clients
-requests==2.19.1
 internetarchive==1.7.3
