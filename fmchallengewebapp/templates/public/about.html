@@ -1,12 +1,17 @@
-
-{% extends "layout.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mt-5">About</h1>
-    <div class="row">
-      <p class="lead">This template was created by <a href="http://github.com/sloria/">Steven Loria</a> for use with the <a href="http://github.com/audreyr/cookiecutter/">cookiecutter</a> package by <a href="http://github.com/audreyr/">Audrey Roy</a>.</p>
-    </div>
-</div>
+{% filter markdown %}
+# About
+
+This site was created by [Christopher Arndt](https://github.com/SpotlightKid) using
+[Flask](https://flask.pocoo.org), the
+[cookiecutter-flask](https://github.com/sloria/cookiecutter-flask) template, the
+[libretto theme](https://github.com/abrahamvarricatt/libretto-theme-for-nikola) from
+[Nikola](https://getnikola.com/), and too many Flask extensions to list here.
+
+The source code for this site is available on
+[GitHub](https://github.com/SpotlightKid/fmchallenge-webapp).
+{% endfilter %}
 {% endblock %}
 
