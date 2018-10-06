@@ -2,9 +2,50 @@
 """Helper utilities and decorators."""
 
 from posixpath import basename
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
 
 from flask import current_app, flash
+
+
+TMPL_IFRAME = """\
+<iframe class="archiveorg-player"
+  src="{url}"
+  width="{width}" height="{height}" frameborder="0"
+  allowfullscreen webkitallowfullscreen="true" mozallowfullscreen="true">
+</iframe>
+<p class="alert alert-primary">If you do not see the audio player here, please allow JavaScript
+and Iframe embedding from archive.org.</p>
+"""
+
+
+def archiveorg_player(url, options=None):
+    """Generate HTML snippet to embed archive.org audio / video player."""
+    options = options or {}
+    opts = {
+        'width': 640,
+        'height': 580 if 'playlist' in options else 45,
+    }
+    opts.update(options)
+    params = {}
+
+    if opts.get("autoplay"):
+        params['autoplay'] = '1'
+
+    if opts.get("playlist"):
+        params['playlist'] = '1'
+
+    if "list_height" in opts:
+        params['list_height'] = str(opts['list_height'])
+
+    if "poster" in opts:
+        params['poster'] = opts['poster']
+
+    url = "https://archive.org/embed/" + canonify_track_url(url)[1]
+
+    if params:
+        url += '?' + urlencode(params)
+
+    return TMPL_IFRAME.format(url=url, **opts)
 
 
 def flash_errors(form, category='warning'):

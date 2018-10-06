@@ -551,6 +551,7 @@ tr:hover {
     color: #333;
     margin: 1em 0px;
     padding: 0.5em 1em;
+    min-height: 100px;
 }
 
 div.flask-markdown {

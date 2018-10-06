@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="mt-5">{{ page_title }}:</h1>
+<h1 class="mt-5">{{ meta_title }}</h1>
 <form class="form-submit-entry" id="submitEntryForm" role="form" method="post" action="">
   {{ form.csrf_token }}
   {{ form_field(form.title) }}

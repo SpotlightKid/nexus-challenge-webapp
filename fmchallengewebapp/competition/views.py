@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from fmchallengewebapp.utils import canonify_track_url, flash_errors
+from fmchallengewebapp.utils import archiveorg_player, canonify_track_url, flash_errors
 from fmchallengewebapp.user.decorators import check_confirmed
 
 from .forms import SubmitCompetitionEntryForm
@@ -13,6 +13,13 @@ from .models import CompetitionEntry
 
 
 blueprint = Blueprint('competition', __name__, static_folder='../static')
+
+
+@blueprint.context_processor
+def inject_player():
+    return dict(
+        archiveorg_player=archiveorg_player,
+    )
 
 
 @blueprint.route('/submit_entry', methods=['GET', 'POST'])
@@ -24,11 +31,11 @@ def submit_entry():
     if user_entry:
         form = SubmitCompetitionEntryForm(request.form, obj=user_entry)
         submit_label = "Update Draft!"
-        page_title = "Update Competition Entry"
+        meta_title = "Update Competition Entry"
     else:
         form = SubmitCompetitionEntryForm(request.form)
         submit_label = "Create Draft!"
-        page_title = "Submit Competition Entry"
+        meta_title = "Submit Competition Entry"
 
     if form.validate_on_submit():
         url, _ = canonify_track_url(form.url.data)
@@ -59,7 +66,7 @@ def submit_entry():
     return render_template(
         'competition/submit.html',
         form=form,
-        page_title=page_title,
+        meta_title=meta_title,
         submit_label=submit_label
     )
 
@@ -94,8 +101,8 @@ def view_entry():
     if current_user.is_authenticated:
         user_entry = CompetitionEntry.query.filter_by(user_id=current_user.id).first()
 
-    page_title = "Review Competition Entry" if user_entry else "Enter the Competition"
+    meta_title = "Review Competition Entry" if user_entry else "Enter the Competition"
     return render_template(
         'competition/view.html',
-        page_title=page_title,
+        meta_title=meta_title,
         user_entry=user_entry)
