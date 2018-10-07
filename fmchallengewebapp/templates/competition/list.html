@@ -28,7 +28,7 @@ in random order by default, but you can choose to display the list sorted by tit
   </p>
 
   {% for entry in entries %}
-  <div class="track-list-entry">
+  <div class="track-list-entry{% if entry.is_published %} published{% endif %}">
     <p class="track-buttons">
       <a class="btn btn-sm btn-primary"
         href="{{ url_for('competition.view_entry', entry=entry.id) }}">View details</a><br/>
@@ -42,7 +42,12 @@ in random order by default, but you can choose to display the list sorted by tit
 
     <p class="track-submit-info">
       Submitted by <span class="username">{{ entry.user.username }}</span> on
+      {% if entry.is_published %}
       <span class="published">{{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+      {% else %}
+      <span class="published">{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+      (not published)
+      {% endif %}
     </p>
 
     <hr/>

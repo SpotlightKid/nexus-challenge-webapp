@@ -44,9 +44,9 @@ def vote():
 @blueprint.route('/list/')
 def list_entries():
     if current_user.is_authenticated and current_user.is_admin:
-        entries = CompetitionEntry.query.filter_by(is_approved=True)
-    else:
         entries = CompetitionEntry.query.all()
+    else:
+        entries = CompetitionEntry.query.filter_by(is_approved=True)
 
     order = request.args.get('order')
     desc = to_bool(request.args.get('desc'))
