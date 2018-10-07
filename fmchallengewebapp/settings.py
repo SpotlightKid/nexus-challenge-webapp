@@ -40,6 +40,7 @@ SITE_AUTHOR = "Open Source Audio Meeting Cologne"
 SITE_TITLE = "Open Source Music FM Synthesizer Challenge"
 SITE_URL = "https://fmchallenge.osamc.de/"
 SITE_EMAIL = "fmchallenge@osamc.de"
+SITE_ADMIN_EMAIL = "chris@chrisarndt.de"
 SITE_DESCRIPTION = "Let's create awesome music with Open Source FM Synthesizers!"
 NAVIGATION_LINKS = (
     ("/", "The Challenge"),

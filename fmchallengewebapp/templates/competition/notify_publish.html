@@ -1,0 +1,15 @@
+{% filter markdown %}
+Dear Competition Organizer,
+
+a new competition entry by user **{{ user.username }}** has been published on
+{{ entry.published_on.strftime('%Y-%m-%d %H:%M') }} and is waiting for approval.
+
+**Title:** *{{ entry.title }}*<br/>
+**Artist:** *{{ entry.artist }}*<br/>
+**URL:** [{{ entry.url }}]({{ entry.url }})
+
+Please go to [{{ approve_url }}]({{ approve_url }}) to review the entry.
+
+
+The Open Source Music FM Synthesizer Challenge
+{% endfilter %}

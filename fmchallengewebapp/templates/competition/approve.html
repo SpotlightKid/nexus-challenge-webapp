@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mt-5">Review Competition Entry</h1>
+
+<p>Submitted by user <strong>{{ entry.user.username }}</strong> on
+<em>{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</em>{% if entry.last_modified_on %}
+, last modified on <em>{{ entry.last_modified_on.strftime('%Y-%m-%d %H:%M UTC') }}</em>
+{% endif %}.</p>
+
+<p class="no-emphasis">
+<strong>Title:</strong> {{ entry.title }}<br/>
+<strong>Artist:</strong> {{ entry.artist }}<br/>
+<strong>URL:</strong> <a href="{{ entry.url }}">{{ entry.url }}</a><br/>
+</p>
+{{ archiveorg_player(entry.url) | safe }}
+<p><strong>Description:</strong></p>
+<div class="flask-markdown shadow-sm rounded">
+{{ entry.description | markdown }}
+</div>
+<p><strong>Production details:</strong></p>
+<div class="flask-markdown shadow-sm rounded">
+{{ entry.production_details | markdown }}
+</div>
+{% if entry.is_published %}
+  {% if entry.is_approved %}
+  <p class="alert alert-success">The entry was published on
+    {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and has been approved to enter
+    the competition.</p>
+  {% else %}
+  <p class="alert alert-info">The entry was published on
+    {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and is waiting for approval.</p>
+  {% endif %}
+{% else %}
+  <p class="alert alert-warning">The entry is not published.</p>
+{% endif %}
+{% if not entry.is_approved %}
+<br/>
+<p><a class="btn btn-secondary"
+  href="{{ url_for('competition.approve', entry=entry.id, confirm=1) }}">Approve entry</a></p>
+{% endif %}
+{% endblock %}

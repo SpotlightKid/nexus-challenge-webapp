@@ -10,10 +10,15 @@ from .utils import inject_site_info
 
 
 def _check_config_variables_are_set(config):
+    assert config['MAIL_SERVER'] is not None, \
+        'MAIL_SERVER is not set, set the env variable APP_MAIL_SERVER.'
     assert config['MAIL_USERNAME'] is not None, \
         'MAIL_USERNAME is not set, set the env variable APP_MAIL_USERNAME.'
     assert config['MAIL_PASSWORD'] is not None, \
         'MAIL_PASSWORD is not set, set the env variable APP_MAIL_PASSWORD.'
+
+    assert config['SITE_ADMIN_EMAIL'] is not None, \
+        'SITE_ADMIN_EMAIL is not set, check the settings file.'
 
     assert config['SECRET_KEY'] is not None, \
         'SECRET_KEY is not set, set the env variable SECRET_KEY.'
