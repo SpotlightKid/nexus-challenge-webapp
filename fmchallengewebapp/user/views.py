@@ -41,7 +41,7 @@ def register():
         html = render_template('users/activate.html', confirm_url=confirm_url)
         subject = 'Please confirm your email'
         start_send_email_task(form.email.data, subject, html)
-        flash('A confirmation email has been sent via email.', 'success')
+        flash('A confirmation email has been sent to {}.'.format(form.email.data), 'success')
 
         user = User.create(
             username=form.username.data,
@@ -66,7 +66,7 @@ def login():
         if user and user.check_password(request.form['password']):
             login_user(user)
             flash('You are logged in.', 'success')
-            return redirect(url_for('competition.view_entry'))
+            return form.redirect()
         else:
             flash('Invalid email and/or password.', 'danger')
             return render_template('users/login.html', form=form)
@@ -131,7 +131,7 @@ def confirm_email(token):
         else:
             flash('The confirmation link is invalid or has expired.', 'danger')
 
-    return redirect(url_for('public.home'))
+    return redirect(url_for('competition.view_entry'))
 
 
 @blueprint.route('/unconfirmed')
