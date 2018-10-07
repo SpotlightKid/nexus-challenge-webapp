@@ -4,7 +4,7 @@
 from posixpath import basename
 from urllib.parse import urlencode, urlparse
 
-from flask import current_app, flash
+from flask import current_app, flash, render_template
 
 
 TMPL_IFRAME = """\
@@ -18,12 +18,13 @@ and Iframe embedding from archive.org.</p>
 """
 
 
-def archiveorg_player(url, options=None):
+def archiveorg_player(url, **options):
     """Generate HTML snippet to embed archive.org audio / video player."""
     options = options or {}
     opts = {
         'width': 640,
         'height': 580 if 'playlist' in options else 45,
+        'compat_info': True,
     }
     opts.update(options)
     params = {}
@@ -45,7 +46,16 @@ def archiveorg_player(url, options=None):
     if params:
         url += '?' + urlencode(params)
 
-    return TMPL_IFRAME.format(url=url, **opts)
+    return render_template('archiveorgplayer.html', url=url, **opts)
+
+
+def canonify_track_url(url):
+    track_id = url.strip()
+    if track_id.startswith(('http', 'archive.org')):
+        urlparts = urlparse(track_id)
+        track_id = basename(urlparts.path)
+    url = 'https://archive.org/details/' + track_id
+    return url, track_id
 
 
 def flash_errors(form, category='warning'):
@@ -60,6 +70,10 @@ def flash_errors(form, category='warning'):
             flash(msgfmt.format(field=getattr(form, field).label.text, msg=error), category)
 
 
+def format_duration(sec):
+    return "%02i:%02i" % (int(sec / 60), sec % 60)
+
+
 def inject_site_info():
     return dict(
         navigation_links=current_app.config.get('NAVIGATION_LINKS', []),
@@ -69,19 +83,6 @@ def inject_site_info():
         site_url=current_app.config.get('SITE_URL'),
         site_author=current_app.config.get('SITE_AUTHOR'),
     )
-
-
-def format_duration(sec):
-    return "%02i:%02i" % (int(sec / 60), sec % 60)
-
-
-def canonify_track_url(url):
-    track_id = url.strip()
-    if track_id.startswith(('http', 'archive.org')):
-        urlparts = urlparse(track_id)
-        track_id = basename(urlparts.path)
-    url = 'https://archive.org/details/' + track_id
-    return url, track_id
 
 
 def to_bool(val, true_values=('1', 'on', 't', 'true', 'y', 'yes')):
