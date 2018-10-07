@@ -26,6 +26,21 @@ def inject_player():
     )
 
 
+@blueprint.route('/vote/')
+def vote():
+    entries = CompetitionEntry.query.filter_by(is_approved=True)
+    order = request.args.get('order')
+    desc = to_bool(request.args.get('desc'))
+
+    if order in ('artist', 'title', 'published_on'):
+        entries = sorted(entries, key=attrgetter(order), reverse=desc)
+    else:
+        entries = list(entries)
+        random.shuffle(entries)
+
+    return render_template('competition/vote.html', entries=entries, order=order, desc=desc)
+
+
 @blueprint.route('/list/')
 def list_entries():
     if current_user.is_authenticated and current_user.is_admin:
@@ -39,7 +54,8 @@ def list_entries():
     if order in ('artist', 'title', 'published_on'):
         entries = sorted(entries, key=attrgetter(order), reverse=desc)
     else:
-        random.shuffle(list(entries))
+        entries = list(entries)
+        random.shuffle(entries)
 
     return render_template('competition/list.html', entries=entries, order=order, desc=desc)
 
