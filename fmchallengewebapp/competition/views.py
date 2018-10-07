@@ -94,7 +94,7 @@ def publish_entry():
                 )
                 try:
                     approve_url = url_for('competition.approve', entry=user_entry.id,
-                                          _external=True)
+                                          _external=True, _scheme='https')
                     html = render_template(
                         'competition/notify_publish.html',
                         approve_url=approve_url,

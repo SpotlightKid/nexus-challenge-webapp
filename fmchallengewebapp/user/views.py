@@ -37,7 +37,7 @@ def register():
 
     if form.validate_on_submit():
         token = generate_confirmation_token(form.email.data)
-        confirm_url = url_for('user.confirm_email', token=token, _external=True)
+        confirm_url = url_for('user.confirm_email', token=token, _external=True, _scheme='https')
         html = render_template('users/activate.html', confirm_url=confirm_url)
         subject = 'Please confirm your email'
         start_send_email_task(form.email.data, subject, html)
@@ -149,7 +149,7 @@ def unconfirmed():
 def resend_confirmation():
     """Re-send user account confirmation email."""
     token = generate_confirmation_token(current_user.email)
-    confirm_url = url_for('user.confirm_email', token=token, _external=True)
+    confirm_url = url_for('user.confirm_email', token=token, _external=True, _scheme='https')
     html = render_template('users/activate.html', confirm_url=confirm_url)
     subject = 'Please confirm your email'
     start_send_email_task(current_user.email, subject, html)
@@ -165,7 +165,7 @@ def forgot():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         token = generate_confirmation_token(user.email)
-        reset_url = url_for('user.forgot_new', token=token, _external=True)
+        reset_url = url_for('user.forgot_new', token=token, _external=True, _scheme='https')
         html = render_template('users/reset.html', username=user.email, reset_url=reset_url)
         subject = 'Reset your password'
         send_email(user.email, subject, html)
