@@ -17,7 +17,7 @@ if [ -n "$VENV" -a -d "$VENV_ROOT" ]; then
         -p "$HOME/var/run/fmchallenge-webapp.pid" \
         --access-logfile "$HOME/var/log/fmchallenge-webapp-access.log" \
         --error-logfile "$HOME/var/log/fmchallenge-webapp-error.log" \
-        fmchallengewebapp.app:create_app\(\) \
+        fmchallengewebapp.app:create_app\(\)
 else
     echo "Virtual environment $VENV not found." >/dev/stderr
 fi
