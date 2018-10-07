@@ -88,7 +88,9 @@ def register_shellcontext(app):
         """Shell context objects."""
         return {
             'db': db,
-            'User': user.models.User}
+            'CompetitionEntry': competition.models.CompetitionEntry,
+            'User': user.models.User,
+        }
 
     app.shell_context_processor(shell_context)
 
