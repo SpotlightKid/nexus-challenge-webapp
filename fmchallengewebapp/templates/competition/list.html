@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block page_title %}Competition Entries{% endblock %}
+
+{% block content %}
+<h1 class="mt-5">Competition Entries</h1>
+
+<p>This page lists all entries, which have been submitted to the competition. The tracks are listed
+in random order by default, but you can choose to display the list sorted by title, artist or date
+(published) as well.</p>
+
+<p><em>Enjoy listening!</em></p>
+
+{% if not entries %}
+<p>No competition entries published yet.</p>
+{% else %}
+<div class="track-list">
+  <p class="sort-links">
+    Sort by:
+    <a href="{{ url_for('competition.list_entries', order='title', desc=1 if (order == 'title' and not desc) else 0) }}"
+      >Title{% if order == 'title' and not desc %} (desc){% endif %}</a>&nbsp;|&nbsp;
+    <a href="{{ url_for('competition.list_entries', order='artist', desc=1 if (order == 'artist' and not desc) else 0) }}"
+      >Artist{% if order == 'artist' and not desc %} (desc){% endif %}</a>&nbsp;|&nbsp;
+    <a href="{{ url_for('competition.list_entries', order='published_on', desc=1 if (order == 'published_on' and not desc) else 0) }}"
+      >Date{% if order == 'published_on' and not desc %} (desc){% endif %}</a>
+  </p>
+
+  {% for entry in entries %}
+  <div class="track-list-entry">
+    <p class="track-buttons">
+      <a class="btn btn-sm btn-primary"
+        href="{{ url_for('competition.view_entry', entry=entry.id) }}">View details</a><br/>
+      <a class="btn btn-sm btn-primary" href="{{ entry.url }}" target="_new"
+        title="Visit track on archive.org">Download</a>
+    </p>
+
+    <p class="track-title">{{ entry.title }}</p>
+
+    <p class="track-artist">by <span class="artist">{{ entry.artist }}</span></p>
+
+    <p class="track-submit-info">
+      Submitted by <span class="username">{{ entry.user.username }}</span> on
+      <span class="published">{{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+    </p>
+
+    <hr/>
+
+    <div class="track-player">
+      {{ archiveorg_player(entry.url, width='100%', compat_info=False) | safe }}
+    </div>
+
+{#
+
+    <div class="track-description">
+      {{ entry.description | markdown }}
+    </div>
+#}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

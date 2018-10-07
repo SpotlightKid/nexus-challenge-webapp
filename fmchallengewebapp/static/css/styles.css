@@ -1287,6 +1287,72 @@ article .title-block h1 a {
 }
 
 /*--------------------------------------------------------------
+  7.2 Track list
+--------------------------------------------------------------*/
+
+.track-list .sort-links {
+    font-size: 80%;
+}
+
+.track-list-entry {
+    border: 1px solid #d9d6d0;
+    background: #f2f1ed;
+    padding: 0 0.8em 0 0.8em;
+    margin: 0 0 0.8em 0;
+}
+
+.track-list-entry hr {
+    width: 100%;
+    padding: 0;
+    margin: 0 0 0.8em 0;
+}
+
+.track-list-entry .track-title {
+    font-size: 175%;
+    margin: 0;
+    padding: 0;
+}
+
+.track-list-entry .track-artist {
+    font-size: 100%;
+    margin: 0 0 0.2em 0;
+    color: #a09a92;
+}
+
+.track-list-entry .track-artist .artist {
+    font-style: italic;
+}
+
+.track-list-entry .track-submit-info {
+    font-size: 75%;
+}
+
+.track-list-entry .track-submit-info .username {
+    font-weight: bold;
+}
+
+.track-list-entry .track-submit-info .published {
+    font-style: italic;
+    font-size: smaller;
+}
+
+.track-list-entry .track-buttons {
+    float: right;
+    padding: 1em 0 0 1em;
+    text-align: right;
+}
+
+.track-list-entry .track-buttons a.btn {
+    margin-bottom: 1em;
+}
+
+.track-list-entry .track-player {
+    clear: right;
+    margin: 0;
+    padding: 0;
+}
+
+/*--------------------------------------------------------------
 8.0 Widgets
 --------------------------------------------------------------*/
 

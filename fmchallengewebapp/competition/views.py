@@ -28,16 +28,20 @@ def inject_player():
 
 @blueprint.route('/list/')
 def list_entries():
-    entries = CompetitionEntry.query.filter_by(is_approved=True)
+    if current_user.is_authenticated and current_user.is_admin:
+        entries = CompetitionEntry.query.filter_by(is_approved=True)
+    else:
+        entries = CompetitionEntry.query.all()
+
     order = request.args.get('order')
     desc = to_bool(request.args.get('desc'))
 
     if order in ('artist', 'title', 'published_on'):
         entries = sorted(entries, key=attrgetter(order), reverse=desc)
     else:
-        random.shuffle(entries)
+        random.shuffle(list(entries))
 
-    return render_template('competition/list.html', entries=entries)
+    return render_template('competition/list.html', entries=entries, order=order, desc=desc)
 
 
 @blueprint.route('/view/<int:entry>')
