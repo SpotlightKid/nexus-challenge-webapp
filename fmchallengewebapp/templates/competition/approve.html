@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
+{% block page_title %}Approve Entry{% endblock %}
+
 {% block content %}
+{% if entry.is_published and not entry.is_approved %}
+<h1 class="mt-5">Approve Competition Entry</h1>
+{% else %}
 <h1 class="mt-5">Review Competition Entry</h1>
+{% endif %}
 
 <p>Submitted by user <strong>{{ entry.user.username }}</strong> on
 <em>{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</em>{% if entry.last_modified_on %}
