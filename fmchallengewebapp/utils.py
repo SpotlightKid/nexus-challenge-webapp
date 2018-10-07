@@ -82,3 +82,7 @@ def canonify_track_url(url):
         track_id = basename(urlparts.path)
     url = 'https://archive.org/details/' + track_id
     return url, track_id
+
+
+def to_bool(val, true_values=('1', 'on', 't', 'true', 'y', 'yes')):
+    return str(val).strip().lower() in true_values

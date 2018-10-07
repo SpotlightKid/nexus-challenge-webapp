@@ -1,91 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if current_user.is_authenticated %}
-{% if user_entry %}
-{% if user_entry.is_published %}
-<h1 class="mt-5">Your Competition Entry</h1>
-{% else %}
-<h1 class="mt-5">Review Competition Entry Draft</h1>
-{% endif %}
+<h1 class="mt-5">Competition Entry</h1>
+
+<p>Submitted by user <strong>{{ entry.user.username }}</strong> on
+<em>{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</em>{% if entry.last_modified_on %}
+, last modified on <em>{{ entry.last_modified_on.strftime('%Y-%m-%d %H:%M UTC') }}</em>
+{% endif %}.</p>
+
 <p class="no-emphasis">
-<strong>Title:</strong> {{ user_entry.title }}<br/>
-<strong>Artist:</strong> {{ user_entry.artist }}<br/>
-<strong>URL:</strong> <a href="{{ user_entry.url }}">{{ user_entry.url }}</a><br/>
+<strong>Title:</strong> {{ entry.title }}<br/>
+<strong>Artist:</strong> {{ entry.artist }}<br/>
+<strong>URL:</strong> <a href="{{ entry.url }}">{{ entry.url }}</a><br/>
 </p>
-{{ archiveorg_player(user_entry.url) | safe }}
+{{ archiveorg_player(entry.url) | safe }}
 <p><strong>Description:</strong></p>
 <div class="flask-markdown shadow-sm rounded">
-{{ user_entry.description | markdown }}
+{{ entry.description | markdown }}
 </div>
 <p><strong>Production details:</strong></p>
 <div class="flask-markdown shadow-sm rounded">
-{{ user_entry.production_details | markdown }}
+{{ entry.production_details | markdown }}
 </div>
-{% if user_entry.is_published %}
-{% if user_entry.is_approved %}
-<p class="alert alert-success">Your entry was published on
-  {{ user_entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and has been approved to enter
-  the competition.</p>
-{% else %}
-<p class="alert alert-info">Your entry was published on
-  {{ user_entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and is waiting for approval.</p>
-{% endif %}
-{% else %}
-<p class="alert alert-warning">Your entry is not published yet and will <strong>not</strong> enter
-the competition until you publish it.</p>
-{% endif %}
-{% if not user_entry.is_published %}
-<br/>
-<p>
-  <a class="btn btn-secondary" href="{{ url_for('competition.submit_entry') }}">Update entry</a>
-  &nbsp;
-  <a class="btn btn-danger" href="{{ url_for('competition.publish_entry') }}">Publish Entry</a>
-</p>
-{% endif %}
-{% else %}
-{% filter markdown %}
-# Enter the Competition
-Before you create and submit your entry, make sure you check out the [rules](/rules)!
-
-Then, to enter the competition:
-
-* Upload your track to [Archive.org](https://archive.org/upload/).
-* Fill out the [submisison form]({{ url_for('competition.submit_entry') }}) and publish your entry
-  before the deadline.
-
-Your can submit your entry to the competition from **15.09.2018** until the deadline on
-**14.10.2018 23:59:59 UTC**.
-
-We **strongly** recommend that you already submit your entry as a draft way before the deadline,
-so that you don't miss the deadline due to technical difficulties. You can then publish your
-prepared draft submission with a single action.
-{% endfilter %}
-
-{% endif %}
-{% else %}
-{% filter markdown %}
-# So You Want To Enter the Competition?
-
-To submit your entry into the competition, you must first
-[register an account]({{ url_for('user.register') }}) on this site and then come back to this page.
-
-Already have an account? [Sign in]({{ url_for('user.login') }}).
-
-Before you create and submit your entry, make sure you check out the [rules](/rules)!
-
-Then, to enter the competition:
-
-* Upload your track to [Archive.org](https://archive.org/upload/).
-* Fill out the [submisison form]({{ url_for('competition.submit_entry') }}) and publish your entry
-  before the deadline.
-
-Your can submit your entry to the competition from **15.09.2018** until the deadline on
-**14.10.2018 23:59:59 UTC**.
-
-We **strongly** recommend that you already submit your entry as a draft way before the deadline,
-so that you don't miss the deadline due to technical difficulties. You can then publish your
-prepared draft submission with a single action.
-{% endfilter %}
-{% endif %}
+{#
+<p><a class="btn btn-secondary" href="{{ url_for('competition.list_entries') }}">All entries</a></p>
+#}
 {% endblock %}

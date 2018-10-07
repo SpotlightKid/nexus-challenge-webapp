@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """Public blueprint views."""
 
+import random
+from operator import attrgetter
 from datetime import datetime
+
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from fmchallengewebapp.utils import archiveorg_player, canonify_track_url
+from fmchallengewebapp.utils import archiveorg_player, canonify_track_url, to_bool
 from fmchallengewebapp.user.decorators import check_is_admin, check_confirmed
 from fmchallengewebapp.user.email import start_send_email_task
 
@@ -21,6 +24,30 @@ def inject_player():
     return dict(
         archiveorg_player=archiveorg_player,
     )
+
+
+@blueprint.route('/list/')
+def list_entries():
+    entries = CompetitionEntry.query.filter_by(is_approved=True)
+    order = request.args.get('order')
+    desc = to_bool(request.args.get('desc'))
+
+    if order in ('artist', 'title', 'published_on'):
+        entries = sorted(entries, key=attrgetter(order), reverse=desc)
+    else:
+        random.shuffle(entries)
+
+    return render_template('competition/list.html', entries=entries)
+
+
+@blueprint.route('/view/<int:entry>')
+def view_entry(entry):
+    entry = CompetitionEntry.get_by_id(entry)
+    if not entry or not entry.is_approved:
+        flash("Competition entry not found.", 'warning')
+        return redirect(url_for('public.home'))
+
+    return render_template('competition/view.html', entry=entry)
 
 
 @blueprint.route('/submit_entry', methods=['GET', 'POST'])
@@ -79,7 +106,7 @@ def submit_entry():
             else:
                 flash("You successfully created a competition entry.", 'success')
 
-        return redirect(url_for('competition.view_entry'))
+        return redirect(url_for('competition.manage_entry'))
 
     return render_template(
         'competition/submit.html',
@@ -99,8 +126,8 @@ def publish_entry():
         if user_entry.is_published:
             flash("Your competition entry is already published.", 'info')
         else:
-            confirm = request.args.get('confirm', False)
-            if confirm and str(confirm).lower() in ('1', 'yes', 'true'):
+            confirm = to_bool(request.args.get('confirm'))
+            if confirm:
                 user_entry.update(
                     is_published=True,
                     published_on=datetime.utcnow()
@@ -128,18 +155,18 @@ def publish_entry():
     else:
         flash("You have not submitted a competition entry yet.", 'warning')
 
-    return redirect(url_for('competition.view_entry'))
+    return redirect(url_for('competition.manage_entry'))
 
 
 @blueprint.route('/submit/')
-def view_entry():
+def manage_entry():
     user_entry = None
     if current_user.is_authenticated:
         user_entry = CompetitionEntry.query.filter_by(user_id=current_user.id).first()
 
     meta_title = "Review Competition Entry" if user_entry else "Enter the Competition"
     return render_template(
-        'competition/view.html',
+        'competition/manage.html',
         meta_title=meta_title,
         user_entry=user_entry)
 
@@ -153,9 +180,27 @@ def approve(entry):
         flash("Competition entry not found.", 'warning')
         return redirect(url_for('public.home'))
 
-    confirm = request.args.get('confirm', False)
-    if confirm and str(confirm).lower() in ('1', 'yes', 'true'):
+    confirm = to_bool(request.args.get('confirm'))
+    if confirm:
         entry.update(is_approved=True)
-        flash("The competition entry was approved!", 'success')
+        try:
+            view_url = url_for('competition.view_entry', entry=entry.id,
+                               _external=True, _scheme='https')
+            html = render_template(
+                'competition/notify_approve.html',
+                view_url=view_url,
+                entry=entry,
+                user=current_user,
+                approved_on=datetime.utcnow())
+            subject = 'Your FM Challenge competition entry has been approved'
+            start_send_email_task(entry.user.email, subject, html)
+        except Exception:
+            current_app.logger.exception("Error sending entry approval notification.")
+            flash(("The competition entry was approved successfully, but there "
+                   "was an error while sending a notification to the user. "
+                   "Please contact <{}> to let the user know the entry is approved."
+                   ).format(entry.user.email), 'warning')
+        else:
+            flash("The competition entry was approved!", 'success')
 
     return render_template('competition/approve.html', entry=entry)

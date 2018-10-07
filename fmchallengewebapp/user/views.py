@@ -131,7 +131,7 @@ def confirm_email(token):
         else:
             flash('The confirmation link is invalid or has expired.', 'danger')
 
-    return redirect(url_for('competition.view_entry'))
+    return redirect(url_for('competition.manage_entry'))
 
 
 @blueprint.route('/unconfirmed')
