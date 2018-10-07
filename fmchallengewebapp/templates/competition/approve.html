@@ -19,7 +19,13 @@
   <p class="track-artist">by <span class="artist">{{ entry.artist }}</span></p>
 
   <p class="track-submit-info">
-    Submitted by <span class="username">{{ entry.user.username }}</span> on
+    Submitted by
+    {% if current_user.is_admin %}
+    <span class="username"><a href="mailto:{{ entry.user.email }}">{{ entry.user.username }}</a></span>
+    {% else %}
+    <span class="username">{{ entry.user.username }}</span>
+    {% endif %}
+    on
     {% if entry.is_published %}
     <span class="track-date">{{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
     {% else %}
