@@ -1,14 +1,14 @@
 {% filter markdown %}
 Dear Competition Organizer,
 
-a competition entry by user **{{ user.username }}** has been published on
-{{ entry.published_on.strftime('%Y-%m-%d %H:%M') }} and is waiting for approval.
+a new competition entry has been submitted by user **{{ user.username }}** on
+{{ entry.created_on.strftime('%Y-%m-%d %H:%M') }}.
 
 **Title:** *{{ entry.title }}*<br/>
 **Artist:** *{{ entry.artist }}*<br/>
 **URL:** [{{ entry.url }}]({{ entry.url }})
 
-Please go to [{{ approve_url }}]({{ approve_url }}) to review the entry.
+You can review the entry at [{{ view_url }}]({{ view_url }}).
 
 
 The Open Source Music FM Synthesizer Challenge

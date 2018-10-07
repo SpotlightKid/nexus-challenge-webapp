@@ -55,7 +55,7 @@ def submit_entry():
                 )
                 flash("Your competition entry was successfully updated.", 'success')
         else:
-            CompetitionEntry.create(
+            user_entry = CompetitionEntry.create(
                 title=form.title.data.strip(),
                 artist=form.artist.data.strip(),
                 url=url,
@@ -64,7 +64,20 @@ def submit_entry():
                 last_modified_on=datetime.utcnow(),
                 user_id=current_user.id
             )
-            flash("You successfully created a competition entry.", 'success')
+            try:
+                view_url = url_for('competition.approve', entry=user_entry.id,
+                                   _external=True, _scheme='https')
+                html = render_template(
+                    'competition/notify_create.html',
+                    view_url=view_url,
+                    entry=user_entry,
+                    user=current_user)
+                subject = 'New competition submission by {}'.format(current_user.username)
+                start_send_email_task(current_app.config['SITE_ADMIN_EMAIL'], subject, html)
+            except Exception:
+                current_app.logger.exception("Error sending entry creation notification.")
+            else:
+                flash("You successfully created a competition entry.", 'success')
 
         return redirect(url_for('competition.view_entry'))
 
@@ -100,10 +113,10 @@ def publish_entry():
                         approve_url=approve_url,
                         entry=user_entry,
                         user=current_user)
-                    subject = 'New competition submission by {}'.format(current_user.username)
+                    subject = 'Competition entry published by {}'.format(current_user.username)
                     start_send_email_task(current_app.config['SITE_ADMIN_EMAIL'], subject, html)
                 except Exception:
-                    current_app.logger.exception("Error sending entry pubublish notification.")
+                    current_app.logger.exception("Error sending entry publish notification.")
                     flash(("Your competition entry was published successfully, but there "
                            "was an error while sending a notification to the organizer. "
                            "Please contact <{}> to make sure your entry is approved "

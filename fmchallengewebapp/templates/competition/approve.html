@@ -34,7 +34,7 @@
 {% else %}
   <p class="alert alert-warning">The entry is not published.</p>
 {% endif %}
-{% if not entry.is_approved %}
+{% if entry.is_published and not entry.is_approved %}
 <br/>
 <p><a class="btn btn-secondary"
   href="{{ url_for('competition.approve', entry=entry.id, confirm=1) }}">Approve entry</a></p>
