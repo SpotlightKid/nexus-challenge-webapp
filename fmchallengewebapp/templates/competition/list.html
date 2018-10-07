@@ -28,10 +28,15 @@ in random order by default, but you can choose to display the list sorted by tit
   </p>
 
   {% for entry in entries %}
-  <div class="track-list-entry{% if entry.is_published %} published{% endif %}">
+  <div class="track-list-entry{% if not entry.is_published %} unpublished{% endif %}">
     <p class="track-buttons">
+      {% if entry.is_published %}
       <a class="btn btn-sm btn-primary"
         href="{{ url_for('competition.view_entry', entry=entry.id) }}">View details</a><br/>
+      {% else %}
+      <a class="btn btn-sm btn-primary"
+        href="{{ url_for('competition.approve', entry=entry.id) }}">Review entry</a><br/>
+      {% endif %}
       <a class="btn btn-sm btn-primary" href="{{ entry.url }}" target="_new"
         title="Visit track on archive.org">Download</a>
     </p>
@@ -46,7 +51,7 @@ in random order by default, but you can choose to display the list sorted by tit
       <span class="published">{{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
       {% else %}
       <span class="published">{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
-      (not published)
+      (unpublished)
       {% endif %}
     </p>
 
@@ -55,13 +60,6 @@ in random order by default, but you can choose to display the list sorted by tit
     <div class="track-player">
       {{ archiveorg_player(entry.url, width='100%', compat_info=False) | safe }}
     </div>
-
-{#
-
-    <div class="track-description">
-      {{ entry.description | markdown }}
-    </div>
-#}
   </div>
   {% endfor %}
 </div>

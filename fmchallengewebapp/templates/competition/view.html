@@ -3,25 +3,42 @@
 {% block page_title %}View Entry{% endblock %}
 
 {% block content %}
-<h1 class="mt-5">Competition Entry</h1>
+<h2 class="mt-5">Competition Entry Details</h1>
 
-<p>Submitted by user <strong>{{ entry.user.username }}</strong> on
-<em>{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</em>{% if entry.last_modified_on %}
-, last modified on <em>{{ entry.last_modified_on.strftime('%Y-%m-%d %H:%M UTC') }}</em>
-{% endif %}.</p>
+<div class="track-list-entry{% if entry.is_published %} published{% endif %}">
+  <p class="track-buttons">
+    <a class="btn btn-sm btn-primary" href="{{ entry.url }}" target="_new"
+      title="Visit track on archive.org">Download</a>
+  </p>
 
-<p class="no-emphasis">
-<strong>Title:</strong> {{ entry.title }}<br/>
-<strong>Artist:</strong> {{ entry.artist }}<br/>
-<strong>URL:</strong> <a href="{{ entry.url }}">{{ entry.url }}</a><br/>
-</p>
-{{ archiveorg_player(entry.url) | safe }}
-<p><strong>Description:</strong></p>
+  <p class="track-title">{{ entry.title }}</p>
+
+  <p class="track-artist">by <span class="artist">{{ entry.artist }}</span></p>
+
+  <p class="track-submit-info">
+    Submitted by <span class="username">{{ entry.user.username }}</span> on
+    {% if entry.is_published %}
+    <span class="track-date">{{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+    {% else %}
+    <span class="track-date">{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+    {% if entry.last_modified_on %}, last modified on
+    <span class="track-date">{{ entry.last_modified_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>{% endif %}
+    {% endif %}
+  </p>
+
+  <hr/>
+
+  <div class="track-player">
+    {{ archiveorg_player(entry.url, width='100%', compat_info=False) | safe }}
+  </div>
+</div>
+
 <div class="flask-markdown shadow-sm rounded">
+<p><strong>Description:</strong></p>
 {{ entry.description | markdown }}
 </div>
-<p><strong>Production details:</strong></p>
 <div class="flask-markdown shadow-sm rounded">
+<p><strong>Production details:</strong></p>
 {{ entry.production_details | markdown }}
 </div>
 <p><a class="btn btn-secondary" href="{{ url_for('competition.list_entries') }}">All entries</a></p>

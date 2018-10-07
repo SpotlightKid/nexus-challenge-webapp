@@ -1301,6 +1301,10 @@ article .title-block h1 a {
     margin: 0 0 0.8em 0;
 }
 
+.track-list-entry.unpublished {
+    background: #fdeded;
+}
+
 .track-list-entry hr {
     width: 100%;
     padding: 0;
@@ -1331,7 +1335,7 @@ article .title-block h1 a {
     font-weight: bold;
 }
 
-.track-list-entry .track-submit-info .published {
+.track-list-entry .track-submit-info .track-date {
     font-style: italic;
     font-size: smaller;
 }
