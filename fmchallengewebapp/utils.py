@@ -22,6 +22,7 @@ def archiveorg_player(url, **options):
     """Generate HTML snippet to embed archive.org audio / video player."""
     options = options or {}
     opts = {
+        'id': 'archiveorg_player',
         'width': 640,
         'height': 580 if 'playlist' in options else 45,
         'compat_info': True,

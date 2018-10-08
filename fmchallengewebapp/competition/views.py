@@ -188,7 +188,7 @@ def manage_entry():
     return render_template(
         'competition/manage.html',
         meta_title=meta_title,
-        user_entry=user_entry)
+        entry=user_entry)
 
 
 @blueprint.route('/approve/<int:entry>')

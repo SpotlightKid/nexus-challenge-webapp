@@ -5,7 +5,7 @@
 {% block content %}
 <h2 class="mt-5">Competition Entry Details</h1>
 
-<div class="track-list-entry{% if entry.is_published %} published{% endif %}">
+<div class="track-list-entry">
   <p class="track-buttons">
     <a class="btn btn-sm btn-primary" href="{{ entry.url }}" target="_new"
       title="Visit track on archive.org">Download</a>
@@ -35,7 +35,7 @@
   <hr/>
 
   <div class="track-player">
-    {{ archiveorg_player(entry.url, width='100%', compat_info=False) | safe }}
+    {{ archiveorg_player(entry.url, width='100%') | safe }}
   </div>
 </div>
 

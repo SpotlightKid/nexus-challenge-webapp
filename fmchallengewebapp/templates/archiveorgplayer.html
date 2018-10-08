@@ -1,7 +1,27 @@
-<iframe class="archiveorg-player"
+<iframe class="archiveorg-player" id="{{ id }}"
   src="{{ url }}"
   width="{{ width }}" height="{{ height }}" frameborder="0"
   allowfullscreen webkitallowfullscreen="true" mozallowfullscreen="true">
 </iframe>
-{% if compat_info %}<p class="alert alert-primary">If you do not see the audio player here,
-please allow JavaScript and Iframe embedding from archive.org.</p>{% endif %}
+{% if compat_info %}
+<p class="alert alert-primary compat_info">
+If you do not see the audio player here, please allow JavaScript and Iframe embedding from
+archive.org.
+</p>
+<script>
+
+function checkPlayerIframeLoaded() {
+    var iframe = $("#{{ id }}");
+    // Check if loading is complete
+    if (!iframe || iframe.css('display') == 'none') {
+        $(".compat_info").show();
+    }
+}
+
+$(document).ready(function () {
+    window.setTimeout(checkPlayerIframeLoaded, 3000);
+})
+
+$('.compat_info').hide();
+</script>
+{% endif %}

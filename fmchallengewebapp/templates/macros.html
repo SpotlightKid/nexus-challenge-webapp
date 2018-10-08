@@ -3,7 +3,7 @@
 {%- endmacro %}
 
 {% macro javascript_tag(name, type='text/javascript') -%}
-    <script type="{{ type }}" src="{{ url_for('static', filename='js/{}.js'.format(name)) }}" />
+    <script type="{{ type }}" src="{{ url_for('static', filename='js/{}.js'.format(name)) }}"></script>
 {%- endmacro %}
 
 {% macro form_field(field, label=True) -%}

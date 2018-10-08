@@ -2,40 +2,62 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
-{% if user_entry %}
-{% if user_entry.is_published %}
+{% if entry %}
+{% if entry.is_published %}
 <h1 class="mt-5">Your Competition Entry</h1>
 {% else %}
 <h1 class="mt-5">Review Competition Entry Draft</h1>
 {% endif %}
-<p class="no-emphasis">
-<strong>Title:</strong> {{ user_entry.title }}<br/>
-<strong>Artist:</strong> {{ user_entry.artist }}<br/>
-<strong>URL:</strong> <a href="{{ user_entry.url }}">{{ user_entry.url }}</a><br/>
-</p>
-{{ archiveorg_player(user_entry.url) | safe }}
+<div class="track-list-entry">
+  <p class="track-buttons">
+    <a class="btn btn-sm btn-primary" href="{{ entry.url }}" target="_new"
+      title="Visit track on archive.org">Download</a>
+  </p>
+
+  <p class="track-title">{{ entry.title }}</p>
+
+  <p class="track-artist">by <span class="artist">{{ entry.artist }}</span></p>
+
+  <p class="track-submit-info">
+    Submitted by
+    {% if current_user.is_admin %}
+    <span class="username"><a href="mailto:{{ entry.user.email }}">{{ entry.user.username }}</a></span>
+    {% else %}
+    <span class="username">{{ entry.user.username }}</span>
+    {% endif %}
+    on <span class="track-date">{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+    {% if entry.last_modified_on %}, last modified on
+    <span class="track-date">{{ entry.last_modified_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>{% endif %}
+  </p>
+
+  <hr/>
+
+  <div class="track-player">
+    {{ archiveorg_player(entry.url, width='100%') | safe }}
+  </div>
+</div>
+<div class="flask-markdown shadow-sm rounded">
 <p><strong>Description:</strong></p>
-<div class="flask-markdown shadow-sm rounded">
-{{ user_entry.description | markdown }}
+{{ entry.description | markdown }}
 </div>
+<div class="flask-markdown shadow-sm rounded">
 <p><strong>Production details:</strong></p>
-<div class="flask-markdown shadow-sm rounded">
-{{ user_entry.production_details | markdown }}
+{{ entry.production_details | markdown }}
 </div>
-{% if user_entry.is_published %}
-{% if user_entry.is_approved %}
+{% if entry.is_published %}
+{% if entry.is_approved %}
 <p class="alert alert-success">Your entry was published on
-  {{ user_entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and has been approved to enter
+  {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and has been approved to enter
   the competition.</p>
 {% else %}
 <p class="alert alert-info">Your entry was published on
-  {{ user_entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and is waiting for approval.</p>
+  {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and is waiting for approval.</p>
 {% endif %}
 {% else %}
 <p class="alert alert-warning">Your entry is not published yet and will <strong>not</strong> enter
 the competition until you publish it.</p>
 {% endif %}
-{% if not user_entry.is_published %}
+{% if not entry.is_published %}
 <br/>
 <p>
   <a class="btn btn-secondary" href="{{ url_for('competition.submit_entry') }}">Update entry</a>

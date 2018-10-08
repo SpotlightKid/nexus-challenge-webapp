@@ -8,7 +8,7 @@
 {% else %}
 <h1 class="mt-5">Review Competition Entry</h1>
 {% endif %}
-<div class="track-list-entry{% if entry.is_published %} published{% endif %}">
+<div class="track-list-entry">
   <p class="track-buttons">
     <a class="btn btn-sm btn-primary" href="{{ entry.url }}" target="_new"
       title="Visit track on archive.org">Download</a>
@@ -25,20 +25,15 @@
     {% else %}
     <span class="username">{{ entry.user.username }}</span>
     {% endif %}
-    on
-    {% if entry.is_published %}
-    <span class="track-date">{{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
-    {% else %}
-    <span class="track-date">{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+    on <span class="track-date">{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
     {% if entry.last_modified_on %}, last modified on
     <span class="track-date">{{ entry.last_modified_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>{% endif %}
-    {% endif %}
   </p>
 
   <hr/>
 
   <div class="track-player">
-    {{ archiveorg_player(entry.url, width='100%', compat_info=False) | safe }}
+    {{ archiveorg_player(entry.url, width='100%') | safe }}
   </div>
 </div>
 
