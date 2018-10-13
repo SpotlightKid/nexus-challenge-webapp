@@ -52,7 +52,12 @@ def list_entries():
     desc = to_bool(request.args.get('desc'))
 
     if order in ('artist', 'title', 'published_on'):
-        entries = sorted(entries, key=attrgetter(order), reverse=desc)
+        if order == 'published_on':
+            def key_func(obj):
+                return obj.published_on or datetime.min
+        else:
+            key_func = attrgetter(order)
+        entries = sorted(entries, key=key_func, reverse=desc)
     else:
         entries = list(entries)
         random.shuffle(entries)
