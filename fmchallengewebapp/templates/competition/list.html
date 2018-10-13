@@ -30,9 +30,12 @@ in random order by default, but you can choose to display the list sorted by tit
   {% for entry in entries %}
   <div class="track-list-entry{% if not entry.is_published %} unpublished{% endif %}">
     <p class="track-buttons">
-      {% if entry.is_published %}
-      <a class="btn btn-sm btn-primary"
-        href="{{ url_for('competition.view_entry', entry=entry.id) }}">View details</a><br/>
+      {% if entry.is_published and not entry.is_approved %}
+        <a class="btn btn-sm btn-primary"
+          href="{{ url_for('competition.approve', entry=entry.id) }}">Review Entry</a><br/>
+      {% elif entry.is_published %}
+        <a class="btn btn-sm btn-primary"
+          href="{{ url_for('competition.view_entry', entry=entry.id) }}">View details</a><br/>
       {% else %}
       <a class="btn btn-sm btn-primary"
         href="{{ url_for('competition.approve', entry=entry.id) }}">Review entry</a><br/>
@@ -49,6 +52,7 @@ in random order by default, but you can choose to display the list sorted by tit
       Submitted by <span class="username">{{ entry.user.username }}</span> on
       {% if entry.is_published %}
       <span class="published">{{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
+      {% if not entry.is_approved %}(not approved){% endif %}
       {% else %}
       <span class="published">{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}</span>
       (unpublished)
