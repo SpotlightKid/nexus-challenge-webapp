@@ -1,0 +1,22 @@
+{% filter markdown %}
+Hello {{ user.username }},
+
+your competition entry submitted on **{{ entry.created_on.strftime('%Y-%m-%d %H:%M') }} UTC** is
+still unpublished. To enter the competition, you *must publish* your entry *before the deadline*
+on **{{ deadline.strftime('%Y-%m-%d %H:%M') }} UTC**!
+
+Your entry:
+
+**Title:** *{{ entry.title }}*<br/>
+**Artist:** *{{ entry.artist }}*<br/>
+**URL:** [{{ entry.url }}]({{ entry.url }})
+
+You can review and publish the entry at [{{ entry_url }}]({{ entry_url }}).
+
+After publication, your entry must be approved by the competition organizer before it is listed on
+the site and can be voted on. As long as your entry is published before the deadline, it will enter
+the competition, even if the approval happens after the deadline.
+
+
+The Open Source Music FM Synthesizer Challenge
+{% endfilter %}

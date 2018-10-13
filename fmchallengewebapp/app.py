@@ -102,6 +102,7 @@ def register_commands(app):
     app.cli.add_command(commands.clean)
     app.cli.add_command(commands.urls)
     app.cli.add_command(commands.create_admin)
+    app.cli.add_command(commands.email_group)
 
 
 def register_context_processors(app):

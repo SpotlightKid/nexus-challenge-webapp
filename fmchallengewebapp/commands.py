@@ -6,12 +6,16 @@ import os
 from subprocess import call
 
 import click
-from flask import current_app
-from flask.cli import with_appcontext
+from flask import current_app, render_template, url_for
+from flask.cli import AppGroup, with_appcontext
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 from .database import db
+from .competition.models import CompetitionEntry
+from .extensions import mail
+from .user.email import send_email
 from .user.models import User
+
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.join(HERE, os.pardir)
@@ -165,3 +169,46 @@ def create_admin(name, password):
             confirmed_on=datetime.datetime.now()
         )
         click.echo("User '{}' created.".format(name))
+
+
+email_group = AppGroup('email')
+
+
+@email_group.command()
+@click.option('--dry-run', '-n', default=False, is_flag=True,
+              help='Do not sent actual email, just print it')
+@with_appcontext
+def publish_reminder(dry_run):
+    """Creates the admin user."""
+    entries = CompetitionEntry.query.filter_by(is_published=False)
+    click.echo("Sending entry publication reminder to {} users.".format(entries.count()))
+
+    with mail.record_messages() as outbox, current_app.test_request_context() as ctx:
+        for entry in entries:
+            try:
+                entry_url = url_for('competition.manage_entry', entry=entry.id,
+                                    _external=True, _scheme='https')
+                body = render_template(
+                    'competition/reminder_publish.html',
+                    entry_url=entry_url,
+                    entry=entry,
+                    user=entry.user,
+                    deadline=current_app.config['SUBMISSION_PERIOD_END'])
+                subject = 'Reminder: your FM Challenge competition entry is still unpublished!'
+                if dry_run:
+                    click.echo("\nTo: {} <{}>\nSubject: {}\n\n{}\n".format(
+                        entry.user.username,
+                        entry.user.email,
+                        subject,
+                        body))
+                else:
+                    send_email(current_app, entry.user.email, subject, body)
+            except Exception:
+                current_app.logger.exception("Error sending entry publication reminder.")
+                click.echo("Could not send entry publication reminder '{} <{}>'. "
+                           "See log for details".format(entry.user.username, entry.user.email))
+            else:
+                click.echo("Entry publication reminder sent to '{} <{}>'.".format(
+                           entry.user.username, entry.user.email))
+
+    click.echo("\nAll done. {} emails sent.".format(len(outbox)))

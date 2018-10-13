@@ -7,6 +7,7 @@ For local development, use a .env file to set environment variables.
 
 """
 
+import datetime
 from environs import Env
 
 env = Env()
@@ -30,6 +31,7 @@ MAIL_SERVER = env.str('APP_MAIL_SERVER', default='osamc.de')
 MAIL_USE_TLS = env.bool('APP_MAIL_USE_TLS', default=False)
 MAIL_USE_SSL = env.bool('APP_MAIL_USE_SSL', default=True)
 MAIL_PORT = env.int('APP_MAIL_PORT', default=465 if MAIL_USE_SSL else 587)
+MAIL_SUPPRESS_SEND = env.bool('MAIL_SUPPRESS_SEND', default=False)
 
 MAIL_USERNAME = env.str('APP_MAIL_USERNAME')
 MAIL_PASSWORD = env.str('APP_MAIL_PASSWORD')
@@ -60,3 +62,7 @@ SOCIAL_BUTTONS_CODE = (
 # Competition parameters
 MIN_TRACK_LENGTH = 60.0
 MAX_TRACK_LENGTH = 300.0
+SUBMISSION_PERIOD_START = datetime.datetime(2018, 9, 15, 0, 0, 0)
+SUBMISSION_PERIOD_END = datetime.datetime(2018, 10, 15, 0, 0, 0)
+VOTING_PERIOD_START = SUBMISSION_PERIOD_END
+VOTING_PERIOD_END = datetime.datetime(2018, 10, 25, 0, 0, 0)
