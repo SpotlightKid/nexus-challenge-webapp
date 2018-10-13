@@ -1,9 +1,9 @@
 {% filter markdown %}
 Hello {{ user.username }},
 
-your competition entry submitted on **{{ entry.created_on.strftime('%Y-%m-%d %H:%M') }} UTC** is
+your competition entry submitted on **{{ entry.created_on.strftime('%Y-%m-%d %H:%M UTC') }}** is
 still unpublished. To enter the competition, you *must publish* your entry *before the deadline*
-on **{{ deadline.strftime('%Y-%m-%d %H:%M') }} UTC**!
+on **{{ deadline.strftime('%Y-%m-%d %H:%M UTC') }}**!
 
 Your entry:
 
