@@ -80,7 +80,22 @@ def view_entry(entry):
 @check_confirmed
 def submit_entry():
     """Competition entry submission form page."""
+    # check whether submission is attempted outside of competition submission period
+    now = datetime.utcnow()
+    start_date = current_app.config.get('SUBMISSION_PERIOD_START')
+    end_date = current_app.config.get('SUBMISSION_PERIOD_END')
+
+    if start_date and now < start_date:
+        flash("The competition submission period has not begun yet. "
+              "Entries cannot be submitted or updated at this time.", 'danger')
+        return redirect(url_for('competition.manage_entry'))
+    elif end_date and now >= end_date:
+        flash("The competition submission period is over. "
+              "Entries cannot be submitted or updated anymore.", 'danger')
+        return redirect(url_for('competition.manage_entry'))
+
     user_entry = CompetitionEntry.query.filter_by(user_id=current_user.id).first()
+
     if user_entry:
         form = SubmitCompetitionEntryForm(request.form, obj=user_entry)
         submit_label = "Update Draft!"
@@ -92,10 +107,11 @@ def submit_entry():
 
     if form.validate_on_submit():
         url, _ = canonify_track_url(form.url.data)
+
         if user_entry:
             if user_entry.is_published:
-                flash("Your competition entry is already published and can't be updated anymore.",
-                      'danger')
+                flash("Your competition entry is already published "
+                      "and can't be updated anymore.", 'danger')
             else:
                 user_entry.update(
                     title=form.title.data.strip(),
@@ -116,14 +132,12 @@ def submit_entry():
                 last_modified_on=datetime.utcnow(),
                 user_id=current_user.id
             )
+
             try:
                 view_url = url_for('competition.approve', entry=user_entry.id,
                                    _external=True, _scheme='https')
-                html = render_template(
-                    'competition/notify_create.html',
-                    view_url=view_url,
-                    entry=user_entry,
-                    user=current_user)
+                html = render_template('competition/notify_create.html', view_url=view_url,
+                    entry=user_entry, user=current_user)
                 subject = 'New competition submission by {}'.format(current_user.username)
                 start_send_email_task(current_app.config['SITE_ADMIN_EMAIL'], subject, html)
             except Exception:
@@ -132,13 +146,13 @@ def submit_entry():
                 flash("You successfully created a competition entry.", 'success')
 
         return redirect(url_for('competition.manage_entry'))
-
-    return render_template(
-        'competition/submit.html',
-        form=form,
-        meta_title=meta_title,
-        submit_label=submit_label
-    )
+    else:
+        return render_template(
+            'competition/submit.html',
+            form=form,
+            meta_title=meta_title,
+            submit_label=submit_label
+        )
 
 
 @blueprint.route('/publish_entry')
@@ -146,17 +160,33 @@ def submit_entry():
 @check_confirmed
 def publish_entry():
     """Publish a competition entry."""
+    # check whether publication is attempted outside of competition submission period
+    now = datetime.utcnow()
+    start_date = current_app.config.get('SUBMISSION_PERIOD_START')
+    end_date = current_app.config.get('SUBMISSION_PERIOD_END')
+
+    if start_date and now < start_date:
+        flash("The competition submission period has not begun yet. "
+              "No entries can be published at this time.", 'danger')
+        return redirect(url_for('competition.manage_entry'))
+    elif end_date and now >= end_date:
+        flash("The competition submission period is over. "
+              "No entries can be published anymore.", 'danger')
+        return redirect(url_for('competition.manage_entry'))
+
     user_entry = CompetitionEntry.query.filter_by(user_id=current_user.id).first()
     if user_entry:
         if user_entry.is_published:
             flash("Your competition entry is already published.", 'info')
         else:
             confirm = to_bool(request.args.get('confirm'))
+
             if confirm:
                 user_entry.update(
                     is_published=True,
                     published_on=datetime.utcnow()
                 )
+
                 try:
                     approve_url = url_for('competition.approve', entry=user_entry.id,
                                           _external=True, _scheme='https')
@@ -164,9 +194,14 @@ def publish_entry():
                         'competition/notify_publish.html',
                         approve_url=approve_url,
                         entry=user_entry,
-                        user=current_user)
+                        user=current_user
+                    )
                     subject = 'Competition entry published by {}'.format(current_user.username)
-                    start_send_email_task(current_app.config['SITE_ADMIN_EMAIL'], subject, html)
+                    start_send_email_task(
+                        current_app.config['SITE_ADMIN_EMAIL'],
+                        subject,
+                        html
+                    )
                 except Exception:
                     current_app.logger.exception("Error sending entry publish notification.")
                     flash(("Your competition entry was published successfully, but there "
@@ -183,17 +218,28 @@ def publish_entry():
     return redirect(url_for('competition.manage_entry'))
 
 
+
 @blueprint.route('/submit/')
 def manage_entry():
+    now = datetime.utcnow()
+    start_date = current_app.config.get('SUBMISSION_PERIOD_START')
+    end_date = current_app.config.get('SUBMISSION_PERIOD_END')
+    in_submission_period = (
+        (start_date is None or now >= start_date) and
+        (end_date is None or now < end_date)
+    )
     user_entry = None
+
     if current_user.is_authenticated:
         user_entry = CompetitionEntry.query.filter_by(user_id=current_user.id).first()
 
     meta_title = "Review Competition Entry" if user_entry else "Enter the Competition"
     return render_template(
         'competition/manage.html',
-        meta_title=meta_title,
-        entry=user_entry)
+        entry=user_entry,
+        in_submission_period=in_submission_period,
+        meta_title=meta_title
+    )
 
 
 @blueprint.route('/approve/<int:entry>')

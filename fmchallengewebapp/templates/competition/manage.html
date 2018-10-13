@@ -45,29 +45,36 @@
 {{ entry.production_details | markdown }}
 </div>
 {% if entry.is_published %}
-{% if entry.is_approved %}
-<p class="alert alert-success">Your entry was published on
-  {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and has been approved to enter
-  the competition.</p>
+  {% if entry.is_approved %}
+  <p class="alert alert-success">Your entry was published on
+    {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and has been approved to enter
+    the competition.</p>
+  {% else %}
+  <p class="alert alert-info">Your entry was published on
+    {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and is waiting for approval.</p>
+  {% endif %}
 {% else %}
-<p class="alert alert-info">Your entry was published on
-  {{ entry.published_on.strftime('%Y-%m-%d %H:%M UTC') }} and is waiting for approval.</p>
-{% endif %}
-{% else %}
-<p class="alert alert-warning">Your entry is not published yet and will <strong>not</strong> enter
-the competition until you publish it.</p>
-{% endif %}
-{% if not entry.is_published %}
-<br/>
-<p>
-  <a class="btn btn-secondary" href="{{ url_for('competition.submit_entry') }}">Update entry</a>
-  &nbsp;
-  <a class="btn btn-danger" href="{{ url_for('competition.publish_entry') }}">Publish Entry</a>
-</p>
+  {% if in_submission_period %}
+  <p class="alert alert-warning">Your entry is not published yet and will <strong>not</strong>
+    enter the competition until you publish it.</p>
+  {% else %}
+  <p class="alert alert-danger">Your entry is not published and does <strong>not</strong> enter
+    the competition.</p>
+  {% endif %}
+
+  {% if in_submission_period and not entry.is_published %}
+  <br/>
+  <p>
+    <a class="btn btn-secondary" href="{{ url_for('competition.submit_entry') }}">Update entry</a>
+    &nbsp;
+    <a class="btn btn-danger" href="{{ url_for('competition.publish_entry') }}">Publish Entry</a>
+  </p>
+  {% endif %}
 {% endif %}
 {% else %}
 {% filter markdown %}
 # Enter the Competition
+
 Before you create and submit your entry, make sure you check out the [rules](/rules)!
 
 Then, to enter the competition:
@@ -76,8 +83,9 @@ Then, to enter the competition:
 * Fill out the [submisison form]({{ url_for('competition.submit_entry') }}) and publish your entry
   before the deadline.
 
-Your can submit your entry to the competition from **15.09.2018** until the deadline on
-**14.10.2018 23:59:59 UTC**.
+Your can submit your entry to the competition from
+**{{ submission_start.strftime('%Y-%m-%d %H:%M:%S UTC') }}** until the deadline on
+**{{ submission_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}**.
 
 We **strongly** recommend that you already submit your entry as a draft way before the deadline,
 so that you don't miss the deadline due to technical difficulties. You can then publish your
@@ -102,8 +110,9 @@ Then, to enter the competition:
 * Fill out the [submisison form]({{ url_for('competition.submit_entry') }}) and publish your entry
   before the deadline.
 
-Your can submit your entry to the competition from **15.09.2018** until the deadline on
-**14.10.2018 23:59:59 UTC**.
+Your can submit your entry to the competition from
+**{{ submission_start.strftime('%Y-%m-%d %H:%M:%S UTC') }}** until the deadline on
+**{{ submission_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}**.
 
 We **strongly** recommend that you already submit your entry as a draft way before the deadline,
 so that you don't miss the deadline due to technical difficulties. You can then publish your
