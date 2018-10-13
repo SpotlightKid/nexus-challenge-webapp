@@ -186,8 +186,7 @@ def publish_reminder(dry_run):
     with mail.record_messages() as outbox, current_app.test_request_context() as ctx:
         for entry in entries:
             try:
-                entry_url = url_for('competition.manage_entry', entry=entry.id,
-                                    _external=True, _scheme='https')
+                entry_url = "{}/submit/".format(current_app.config['SITE_URL'].rstrip('/'))
                 body = render_template(
                     'competition/reminder_publish.html',
                     entry_url=entry_url,
