@@ -75,6 +75,18 @@ def format_duration(sec):
     return "%02i:%02i" % (int(sec / 60), sec % 60)
 
 
+def in_submission_period(now):
+    start_date = current_app.config.get('SUBMISSION_PERIOD_START')
+    end_date = current_app.config.get('SUBMISSION_PERIOD_END')
+    return (start_date is None or now >= start_date) and (end_date is None or now < end_date)
+
+
+def in_voting_period(now):
+    start_date = current_app.config.get('VOTING_PERIOD_START')
+    end_date = current_app.config.get('VOTING_PERIOD_END')
+    return (start_date is None or now >= start_date) and (end_date is None or now < end_date)
+
+
 def inject_site_info():
     return dict(
         navigation_links=current_app.config.get('NAVIGATION_LINKS', []),

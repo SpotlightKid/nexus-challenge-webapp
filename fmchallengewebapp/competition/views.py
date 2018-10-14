@@ -2,23 +2,34 @@
 """Public blueprint views."""
 
 import random
-from operator import attrgetter
 from datetime import datetime
+from operator import attrgetter, itemgetter
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from fmchallengewebapp.utils import archiveorg_player, canonify_track_url, to_bool
-from fmchallengewebapp.user.decorators import check_is_admin, check_confirmed
+from fmchallengewebapp.user.decorators import check_confirmed, check_is_admin
 from fmchallengewebapp.user.email import start_send_email_task
+from fmchallengewebapp.utils import (archiveorg_player, canonify_track_url, in_submission_period,
+                                     in_voting_period, to_bool)
 
-from .forms import SubmitCompetitionEntryForm
-from .models import CompetitionEntry
-
+from .forms import SubmitCompetitionEntryForm, VotingForm
+from .models import CompetitionEntry, Vote
 
 blueprint = Blueprint('competition', __name__, static_folder='../static')
 
 
+# utility functions for this module
+def get_user_votes(user):
+    votes = {}
+    for vote in Vote.query.filter(Vote.user_id == user.id, Vote.points > 0):
+        key = VotingForm.points_to_fields.get(vote.points)
+        if key:
+            votes[key] = vote.entry_id
+    return votes
+
+
+# template context processsors
 @blueprint.context_processor
 def inject_player():
     return dict(
@@ -26,8 +37,10 @@ def inject_player():
     )
 
 
+# request handlers
 @blueprint.route('/vote/')
 def vote():
+    now = datetime.utcnow()
     entries = CompetitionEntry.query.filter_by(is_approved=True)
     order = request.args.get('order')
     desc = to_bool(request.args.get('desc'))
@@ -38,7 +51,101 @@ def vote():
         entries = list(entries)
         random.shuffle(entries)
 
-    return render_template('competition/vote.html', entries=entries, order=order, desc=desc)
+    if current_user.is_authenticated:
+        user_votes = Vote.query.filter_by(user_id=current_user.id)
+        user_votes = user_votes.order_by(Vote.points.desc()).limit(5)
+    else:
+        user_votes = None
+
+    return render_template(
+        'competition/vote.html',
+        desc=desc,
+        entries=entries,
+        in_submission_period=in_submission_period(now),
+        in_voting_period=in_voting_period(now),
+        now=now,
+        order=order,
+        user_votes=user_votes
+    )
+
+
+
+@blueprint.route('/submit_vote', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def submit_vote():
+    """Vote submission form page."""
+    # check whether voting is attempted outside of competition voting period
+    now = datetime.utcnow()
+    start_date = current_app.config.get('VOTING_PERIOD_START')
+    end_date = current_app.config.get('VOTING_PERIOD_END')
+
+    if start_date and now < start_date:
+        flash("The voting period of the competition has not begun yet. "
+              "No votes can be submitted at this time.", 'danger')
+        return redirect(url_for('competition.vote'))
+    elif end_date and now >= end_date:
+        flash("The voting period of the competition is over. "
+              "Votes cannot be submitted anymore.", 'danger')
+        return redirect(url_for('competition.vote'))
+
+    entries = CompetitionEntry.query.filter(
+        CompetitionEntry.is_approved == True,  # noqa:E712
+        CompetitionEntry.user_id != current_user.id
+    )
+    entries = [(entry.id, '“{}” by {}'.format(entry.title, entry.artist)) for entry in entries]
+    entry_ids = [entry[0] for entry in entries]
+    entries.sort(key=itemgetter(1))
+
+    current_votes = get_user_votes(current_user)
+
+    if current_votes:
+        form = VotingForm(request.form, **current_votes)
+        submit_label = "Submit Vote!"
+        meta_title = "Update Vote"
+    else:
+        # Bogus entry for empty first option of selects
+        entries.insert(0, (-1, ""))
+        form = VotingForm(request.form, **current_votes)
+        submit_label = "Submit Vote!"
+        meta_title = "Submit Vote"
+
+    form.first.choices = entries
+    # set allowed values for AnyOf validator shared by all select fields
+    form.first.validators[1].values = entry_ids
+    form.second.choices = entries
+    form.third.choices = entries
+    form.fourth.choices = entries
+    form.fifth.choices = entries
+
+    if form.validate_on_submit():
+        for points, field in VotingForm.points_to_fields.items():
+            vote = Vote.query.filter_by(user_id=current_user.id, points=points).first()
+            entry_id = getattr(form, field).data
+
+            if vote and vote.entry_id == entry_id:
+                current_app.logger.debug("Not updating unchanged vote: %r", vote)
+            elif vote:
+                current_app.logger.debug("Updating vote: %r.", vote)
+                vote.update(entry_id=entry_id, created_on=now)
+                current_app.logger.debug("New entry: %r", vote.entry)
+            else:
+                vote = Vote.create(user_id=current_user.id, entry_id=entry_id, points=points,
+                                   created_on=now)
+                current_app.logger.debug("Created new vote: %r", vote)
+
+        if current_votes:
+            flash("Your vote was successfully updated. Thank you for voting!", 'success')
+        else:
+            flash("Your vote was registered successfully. Thank you for voting!", 'success')
+        return redirect(url_for('competition.vote'))
+    else:
+        return render_template(
+            'competition/submit_vote.html',
+            form=form,
+            submit_label=submit_label,
+            meta_title=meta_title
+        )
 
 
 @blueprint.route('/list/')
@@ -218,16 +325,9 @@ def publish_entry():
     return redirect(url_for('competition.manage_entry'))
 
 
-
 @blueprint.route('/submit/')
 def manage_entry():
     now = datetime.utcnow()
-    start_date = current_app.config.get('SUBMISSION_PERIOD_START')
-    end_date = current_app.config.get('SUBMISSION_PERIOD_END')
-    in_submission_period = (
-        (start_date is None or now >= start_date) and
-        (end_date is None or now < end_date)
-    )
     user_entry = None
 
     if current_user.is_authenticated:
@@ -237,8 +337,9 @@ def manage_entry():
     return render_template(
         'competition/manage.html',
         entry=user_entry,
-        in_submission_period=in_submission_period,
-        meta_title=meta_title
+        in_submission_period=in_submission_period(now),
+        meta_title=meta_title,
+        now=now
     )
 
 

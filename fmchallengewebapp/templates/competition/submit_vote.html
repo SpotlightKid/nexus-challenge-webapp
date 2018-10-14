@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from 'macros.html' import select_field %}
+
+{% block content %}
+<h1 class="mt-5">{{ meta_title }}</h1>
+
+<p>To vote, please assign five (5) to one (1) points to five competition entries. The more points
+you give, the higher you rank the entry.</p>
+<form class="form-submit-vote" id="submitVoteForm" role="form" method="post" action="">
+  {{ form.csrf_token }}
+  {{ select_field(form.first) }}
+  {{ select_field(form.second) }}
+  {{ select_field(form.third) }}
+  {{ select_field(form.fourth) }}
+  {{ select_field(form.fifth) }}
+  {% if form.errors.form %}
+  <div class="alert alert-warning">
+  <p>There are some issues with your vote:</p>
+  <ul>
+    {% for error in form.errors.form %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+  </div>
+  <br/>
+  <br/>
+  {% endif %}
+  <button type="submit">{{ submit_label }}</button>&nbsp;
+  <a class="btn btn-secondary" href="{{ url_for('competition.vote') }}">Cancel</a>
+</form>
+<br/>
+{% endblock %}

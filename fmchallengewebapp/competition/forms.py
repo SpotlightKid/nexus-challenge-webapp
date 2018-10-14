@@ -3,10 +3,11 @@
 
 from internetarchive import get_item
 from flask import current_app
-from flask_wtf import FlaskForm
+from flask_login import current_user
 from flask_pagedown.fields import PageDownField
-from wtforms import BooleanField, StringField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo, InputRequired, Length
+from flask_wtf import FlaskForm
+from wtforms import BooleanField, SelectField, StringField, TextAreaField
+from wtforms.validators import AnyOf, DataRequired, Email, EqualTo, InputRequired, Length
 
 from fmchallengewebapp.utils import canonify_track_url, format_duration
 from .models import CompetitionEntry
@@ -53,7 +54,6 @@ class SubmitCompetitionEntryForm(FlaskForm):
 
         url, track_id = canonify_track_url(self.url.data)
 
-        error = False
         try:
             item = get_item(track_id, request_kwargs={'timeout': 30})
             metadata = item.item_metadata.get('metadata')
@@ -61,11 +61,9 @@ class SubmitCompetitionEntryForm(FlaskForm):
                 raise ValueError("'%s' not found." % track_id)
         except Exception as exc:
             self.add_form_error("Could not get meta data from Archive.org: %s" % exc)
-            error = True
         else:
             if metadata.get('title', '').strip().lower() != self.title.data.strip().lower():
                 self.add_form_error("Title does not match title in Archive.org meta data.")
-                error = True
 
             if metadata.get('creator', '').strip().lower() != self.artist.data.strip().lower():
                 self.add_form_error("Artist does not match creator/author in Archive.org meta data.")
@@ -77,7 +75,6 @@ class SubmitCompetitionEntryForm(FlaskForm):
                     break
             else:
                 self.add_form_error("Track not available in FLAC format.")
-                error = True
 
             if flac:
                 try:
@@ -91,13 +88,56 @@ class SubmitCompetitionEntryForm(FlaskForm):
                 if length < min_length:
                     self.add_form_error("Track does not have minimum required duration (%s min.)."
                                         % format_duration(min_length))
-                    error = True
                 elif length > max_length:
                     self.add_form_error("Track exceeds maximum allowed duration (%s min.)." %
                                         format_duration(max_length))
-                    error = True
             else:
                 self.add_form_error("Missing meta data for FLAC download of track.")
-                error = True
 
-        return not error
+        return not self.errors.get('form')
+
+
+vote_validators = [InputRequired(), AnyOf([-1], message="You must select an entry.")]
+
+
+class VotingForm(FlaskForm):
+    """Form for voting on competition entries."""
+
+    points_to_fields = {
+        5: 'first',
+        4: 'second',
+        3: 'third',
+        2: 'fourth',
+        1: 'fifth'
+    }
+    fields_to_points = {v: k for k,v in points_to_fields.items()}
+
+    first = SelectField('5 points to:', coerce=int, validators=vote_validators)
+    second = SelectField('4 points to:', coerce=int, validators=vote_validators)
+    third = SelectField('3 points to:', coerce=int, validators=vote_validators)
+    fourth = SelectField('2 points to:', coerce=int, validators=vote_validators)
+    fifth = SelectField('1 point to:', coerce=int, validators=vote_validators)
+
+
+    def add_form_error(self, msg):
+        self.errors.setdefault('form', []).append(msg)
+
+    def validate(self):
+        """Validate the form."""
+        initial_validation = super().validate()
+        if not initial_validation:
+            return False
+
+        error = False
+        votes = {k: v for k,v in self.data.items() if k in self.fields_to_points}
+
+        if len(set(votes.values())) < len(votes):
+            self.add_form_error("You must select five different competition entries.")
+
+        user_entry = CompetitionEntry.query.filter_by(user_id=current_user.id).first()
+        if user_entry:
+            for field, entry_id in votes.items():
+                if entry_id == user_entry.id:
+                    self.add_form_error("You may not vote for your own competition entry.")
+
+        return not self.errors.get('form')

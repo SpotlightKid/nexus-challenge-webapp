@@ -10,13 +10,28 @@
     <p>
       {% if label %}{{ field.label }}{% endif %}
       {{ field(placeholder=field.description or ('' if label else field.label.text)) }}
+      {% if field.errors %}
       <span class="error">
-        {% if field.errors %}
+        {% for error in field.errors %}
+          {{ error }}
+        {% endfor %}
+      </span>
+      {% endif %}
+    </p>
+{%- endmacro %}
+
+{% macro select_field(field, label=True) -%}
+    <p>
+      {% if label %}{{ field.label }}{% endif %}<br/>
+      {{ field() }}
+      {% if field.errors %}
+      <br/>
+      <span class="error">
           {% for error in field.errors %}
             {{ error }}
           {% endfor %}
-        {% endif %}
       </span>
+      {% endif %}
     </p>
 {%- endmacro %}
 

@@ -3,20 +3,61 @@
 {% block page_title %}Voting{% endblock %}
 
 {% block content %}
+<h1>Voting</h1>
+
+{% if in_voting_period %}
+  {% if current_user.is_authenticated %}
+    {% if user_votes %}
+    <p>Your vote was already registered. You can update your vote ontil the end of the voting
+    period on <strong>{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}:</strong></p>
+
+    <p style="text-align: center;"><a class="btn btn-primary"
+      href="{{ url_for('competition.submit_vote') }}">Update Vote!</a></p>
+
+    <p>Here is your vote:</p>
+    <p>
+      {% for vote in user_votes %}
+        <strong>{{ vote.points }} points:</strong>
+        <a href="{{ url_for('competition.view_entry', entry=vote.entry.id) }}"
+          >“{{ vote.entry.title }}”</a> by <em>{{ vote.entry.artist }}</em><br/>
+      {% endfor %}
+    </p>
+    {% else %}
+    <p>To cast your vote in the competition, please use the voting form:</p>
+
+    <p style="text-align: center;"><a class="btn btn-primary"
+      href="{{ url_for('competition.submit_vote') }}">Vote!</a></p>
+    {% endif %}
+  {% else %}
+  {% filter markdown %}
+  To cast your vote in the competition, you must first
+  [register an account]({{ url_for('user.register') }}) on this site and then come back to this
+  page.
+
+  Already have an account? [Sign in]({{ url_for('user.login') }}).
+  {% endfilter %}
+  {% endif %}
+
+{% else %}
+  {% filter markdown %}
+  The voting period runs from when the submission deadline for the competition has passed on
+  **{{ submission_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}** for **ten days** until
+  **{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}**.
+
+  {% if in_submission_period %}
+  In the meanwhile, have a listen to the entries submitted so far. And while you're here: have you
+  considered [entering the competition](/submit/)?
+  {% endif %}
+  {% endfilter %}
+{% endif %}
 {% filter markdown %}
-# Voting
-
-Voting will be possible when the submission deadline for the competition has passed on
-**14.10.2018 23:59:59 UTC**.
-
-In the meanwhile, have a listen to the entries submitted so far. And while you're here: have you
-considered [entering the competition](/submit/)?
 
 ## Competition Entries
 
-These entries have been submitted to the competition so far. The tracks are listed
-in random order by default, but you can choose to display the list sorted by title, artist or date
-(published) as well.
+The following entries have been submitted into the
+competition{% if in_submission_period %}so far{% endif %}.
+The tracks are listed in random order by default, but you can choose to display the list sorted by
+title, artist or date (published) as well.
 
 *Enjoy listening!*
 {% endfilter %}
