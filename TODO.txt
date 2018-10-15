@@ -1,0 +1,32 @@
+TODO
+====
+
+Bugs
+----
+
+* Also display user vote when voting period is over
+
+Enhancements
+------------
+* Command to send reminder email to participants, that they need to vote. - done
+* Add captcha to registration form (e.g. "Fill in third word from rule A.3")
+* Autolink URLs in Markdown track description and production notes
+
+
+Tasks
+-----
+
+* Announcement, that voting period has begun (forums, mailing lists).
+  * Linuxmusisians Forum - done
+  * Musikerboard - done
+  * KVR forum - done
+  * Twitter - done
+  * osamc.de - done
+  * LAA, LAU
+* Send voting reminders. - done
+* Delete test entry and votes. - done
+* Clarify terms for sponsoring 2nd and 3rd prize. - in progerss
+* Showcase track of competition entries for SC and/or YT (volunteers?)
+* Organize podcast about competition (volunteers?)
+* Create preset pack
+* Create "FM Challenge Sampler" archive
