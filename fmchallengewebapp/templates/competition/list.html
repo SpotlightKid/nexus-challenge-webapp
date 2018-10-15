@@ -62,7 +62,7 @@ in random order by default, but you can choose to display the list sorted by tit
     <hr/>
 
     <div class="track-player">
-      {{ archiveorg_player(entry.url, width='100%', compat_info=False) | safe }}
+      {{ archiveorg_player(entry.url, width='100%', id="archiveorg-player-%i" % entry.id) | safe }}
     </div>
   </div>
   {% endfor %}

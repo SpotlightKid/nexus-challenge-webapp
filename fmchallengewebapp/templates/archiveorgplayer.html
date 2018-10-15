@@ -10,16 +10,18 @@ archive.org.
 </p>
 <script>
 
-function checkPlayerIframeLoaded() {
-    var iframe = $("#{{ id }}");
-    // Check if loading is complete
-    if (!iframe || iframe.css('display') == 'none') {
-        $(".compat_info").show();
+if (!checkPlayerIframeLoaded) {
+    function checkPlayerIframeLoaded(frame_id) {
+        var iframe = $(frame_id);
+        // Check if loading is complete
+        if (!iframe || iframe.css('display') == 'none') {
+            $(".compat_info").show();
+        }
     }
 }
 
 $(document).ready(function () {
-    window.setTimeout(checkPlayerIframeLoaded, 3000);
+    window.setTimeout(function() { checkPlayerIframeLoaded("#{{ id }}"); }, 3000);
 })
 
 $('.compat_info').hide();

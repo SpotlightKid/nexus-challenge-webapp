@@ -8,8 +8,8 @@
 {% if in_voting_period %}
   {% if current_user.is_authenticated %}
     {% if user_votes and user_votes.count() %}
-    <p>Your vote was already registered. You can update your vote ontil the end of the voting
-    period on <strong>{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}:</strong></p>
+    <p>Your vote was already registered. You can update your vote until the end of the voting
+    period.</p>
 
     <p style="text-align: center;"><a class="btn btn-primary"
       href="{{ url_for('competition.submit_vote') }}">Update Vote!</a></p>
@@ -28,10 +28,6 @@
     <p style="text-align: center;"><a class="btn btn-primary"
       href="{{ url_for('competition.submit_vote') }}">Vote!</a></p>
 
-    <p>The voting period runs from
-      <strong>{{ voting_start.strftime('%Y-%m-%d %H:%M:%S UTC') }}</strong>
-      for <strong>ten days</strong> until
-      <strong>{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}</strong>.</p>
     {% endif %}
   {% else %}
   {% filter markdown %}
@@ -43,6 +39,10 @@
   {% endfilter %}
   {% endif %}
 
+  <p>The voting period runs from
+    <strong>{{ voting_start.strftime('%Y-%m-%d %H:%M:%S UTC') }}</strong>
+    for <strong>ten days</strong> until
+    <strong>{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}</strong>.</p>
 {% else %}
   {% filter markdown %}
   The voting period runs from when the submission deadline for the competition has passed on
@@ -102,7 +102,7 @@ title, artist or date (published) as well.
     <hr/>
 
     <div class="track-player">
-      {{ archiveorg_player(entry.url, width='100%', compat_info=False) | safe }}
+      {{ archiveorg_player(entry.url, width='100%', id="archiveorg-player-%i" % entry.id) | safe }}
     </div>
 
 {#
