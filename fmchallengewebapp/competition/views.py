@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 """Public blueprint views."""
 
+# Standard library modules
 import random
 from datetime import datetime
 from operator import attrgetter, itemgetter
 
+# Third-party modules
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
+# Application specific modules
 from fmchallengewebapp.user.decorators import check_confirmed, check_is_admin
 from fmchallengewebapp.user.email import start_send_email_task
 from fmchallengewebapp.utils import (archiveorg_player, canonify_track_url, in_submission_period,
@@ -15,6 +18,7 @@ from fmchallengewebapp.utils import (archiveorg_player, canonify_track_url, in_s
 
 from .forms import SubmitCompetitionEntryForm, VotingForm
 from .models import CompetitionEntry, Vote
+
 
 blueprint = Blueprint('competition', __name__, static_folder='../static')
 
@@ -67,7 +71,6 @@ def vote():
         order=order,
         user_votes=user_votes
     )
-
 
 
 @blueprint.route('/submit_vote', methods=['GET', 'POST'])

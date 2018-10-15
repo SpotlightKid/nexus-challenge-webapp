@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 """User blueprint views."""
 
-import datetime
+# Standard library modules
+from datetime import datetime
 
+# Third-party modules
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
+# Application specific modules
 from fmchallengewebapp.extensions import login_manager
+from fmchallengewebapp.utils import in_submission_period, in_voting_period
 
 from .decorators import check_confirmed
 from .email import start_send_email_task
 from .forms import ChangePasswordForm, ForgotForm, LoginForm, RegisterForm
 from .models import User
 from .token import confirm_token, generate_confirmation_token
+
 
 blueprint = Blueprint('user', __name__, url_prefix='/users', static_folder='../static')
 
@@ -168,7 +173,7 @@ def forgot():
         reset_url = url_for('user.forgot_new', token=token, _external=True, _scheme='https')
         html = render_template('users/reset.html', username=user.email, reset_url=reset_url)
         subject = 'Reset your password'
-        send_email(user.email, subject, html)
+        start_send_email_task(user.email, subject, html)
         user.update(password_reset_token=token)
         flash('A password reset email has been sent via email.', 'success')
         return redirect(url_for('public.home'))

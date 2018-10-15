@@ -5,8 +5,10 @@ See: http://webtest.readthedocs.org/
 
 """
 
+# Third-party modules
 from flask import url_for
 
+# Application specific modules
 from fmchallengewebapp.user.models import User
 
 from .factories import UserFactory

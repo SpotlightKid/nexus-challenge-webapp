@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 
+# Third-party modules
 from flask import Flask, render_template
 
 from . import commands, competition, public, user

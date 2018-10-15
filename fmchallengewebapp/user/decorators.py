@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """User blueprint custom view decorators."""
 
+# Standard library modules
 from functools import wraps
 
+# Third-party modules
 from flask import flash, redirect, url_for
 from flask_login import current_user
 

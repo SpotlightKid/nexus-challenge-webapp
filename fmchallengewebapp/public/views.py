@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """Public blueprint views."""
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+# Third-party modules
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_user
 
+# Application specific modules
 from fmchallengewebapp.user.forms import LoginForm
 from fmchallengewebapp.utils import flash_errors
+
 
 blueprint = Blueprint('public', __name__, static_folder='../static')
 

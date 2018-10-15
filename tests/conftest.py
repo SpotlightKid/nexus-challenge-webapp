@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Defines fixtures available to all tests."""
 
+# Third-party modules
 import pytest
 from webtest import TestApp
 
+# Application specific modules
 from fmchallengewebapp.app import create_app
 from fmchallengewebapp.database import db as _db
 

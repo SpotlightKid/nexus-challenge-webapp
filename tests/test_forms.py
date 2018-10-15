@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test forms."""
 
+# Application specific modules
 from fmchallengewebapp.user.forms import LoginForm, RegisterForm
 
 

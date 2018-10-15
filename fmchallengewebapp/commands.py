@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 """Click commands."""
 
+# Standard library modules
 import datetime
 import os
+from glob import glob
 from subprocess import call
 
+# Third-party modules
 import click
 from flask import current_app, render_template
 from flask.cli import AppGroup, with_appcontext
 from flask_mail import Message
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
-from .database import db
 from .competition.models import CompetitionEntry
+from .database import db
 from .extensions import mail
 from .user.models import User
 
@@ -47,7 +50,8 @@ def lint(fix_imports):
             exit(rv)
 
     if fix_imports:
-        execute_tool('Fixing import order', 'isort', '-rc')
+        execute_tool('Fixing import order', 'isort', '-rc', 'fmchallengewebapp', 'tests',
+                     *glob('*.py'))
 
     execute_tool('Checking code style', 'flake8')
 

@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """User blueprint email helper module."""
 
+# Standard library modules
 from multiprocessing import get_context
 
+# Third-party modules
 from flask import current_app
 from flask_mail import Message
 
+# Application specific modules
 from fmchallengewebapp.extensions import mail
 
 

@@ -7,8 +7,12 @@ For local development, use a .env file to set environment variables.
 
 """
 
+# Standard library modules
 import datetime
+
+# Third-party modules
 from environs import Env
+
 
 env = Env()
 env.read_env()
@@ -52,8 +56,6 @@ NAVIGATION_LINKS = (
     ("/prizes/", "Prizes"),
     ("/fmsynths/", "FM Synths"),
     ("mailto:fmchallenge@osamc.de", "Contact"),
-    #("/blog/", "Blog"),
-    #("/rss.xml", "RSS feed"),
 )
 SOCIAL_BUTTONS_CODE = (
     'https://twitter.com/osamCologne',

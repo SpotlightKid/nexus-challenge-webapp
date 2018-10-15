@@ -4,13 +4,13 @@
 # setup.py - Setup file for the fmchallenge-webapp Flask app
 #
 
+# Standard library modules
 import distutils
 import subprocess
-import sys
-
 from os.path import dirname, join
 
-from setuptools import setup
+# Third-party modules
+from setuptools import find_packages, setup
 
 
 install_requires = [line.strip() for line in """\
@@ -98,10 +98,10 @@ setup(
     author_email='chris@chrisarndt.de',
     url='https://github.com/SpotlightKid/fnmchallenge-webapp',
     license='MIT License',
-    description="Dynamic part of the web site for the Open Source FM Synthesizer Challenge",
+    description='Dynamic part of the web site for the Open Source FM Synthesizer Challenge',
     classifiers=classifiers,
     long_description=read('README.rst'),
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
     tests_require=tests_require,

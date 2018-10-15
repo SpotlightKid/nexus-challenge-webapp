@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 """Model unit tests."""
 
+# Standard library modules
 import datetime as dt
 
+# Third-party modules
 import pytest
 
+# Application specific modules
 from fmchallengewebapp.user.models import Role, User
 
 from .factories import UserFactory

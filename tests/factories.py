@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Factories to help in tests."""
 
+# Third-party modules
 from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 
+# Application specific modules
 from fmchallengewebapp.database import db
 from fmchallengewebapp.user.models import User
 

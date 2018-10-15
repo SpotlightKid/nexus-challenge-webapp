@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """User blueprint models."""
 
+# Standard library modules
 import datetime as dt
 
+# Third-party modules
 from flask_login import UserMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 
+# Application specific modules
 from fmchallengewebapp.database import Column, Model, SurrogatePK, db, reference_col, relationship
 from fmchallengewebapp.extensions import bcrypt
 

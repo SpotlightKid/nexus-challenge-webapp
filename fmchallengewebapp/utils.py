@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Helper utilities and decorators."""
 
+# Standard library modules
 from posixpath import basename
 from urllib.parse import urlencode, urlparse
 
+# Third-party modules
 from flask import current_app, flash, render_template
 
 

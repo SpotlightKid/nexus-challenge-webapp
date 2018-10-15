@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Competition blueprint models."""
 
+# Standard library modules
 import datetime as dt
 
-from sqlalchemy.ext.hybrid import hybrid_property
-
+# Application specific modules
 from fmchallengewebapp.database import Column, Model, SurrogatePK, db, reference_col, relationship
 
 
@@ -51,17 +51,3 @@ class Vote(SurrogatePK, Model):
             title=self.entry.title,
             points=self.points
         )
-
-# ~    @hybrid_property
-# ~    def password(self):
-# ~        """Get password."""
-# ~        return self.hashed_password
-
-# ~    @password.setter
-# ~    def password(self, value):
-# ~        """Set password."""
-# ~        self.hashed_password = bcrypt.generate_password_hash(value)
-
-# ~    def check_password(self, value):
-# ~        """Check password."""
-# ~        return bcrypt.check_password_hash(self.password, value)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """User blueprint email confirmation token handling."""
 
+# Third-party modules
 from flask import current_app
 from itsdangerous import BadData, URLSafeTimedSerializer
 
