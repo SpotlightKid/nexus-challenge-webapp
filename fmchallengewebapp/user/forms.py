@@ -2,6 +2,7 @@
 """User blueprint forms."""
 
 # Standard library modules
+import re
 from urllib.parse import urljoin, urlparse
 
 # Third-party modules
@@ -10,6 +11,7 @@ from flask_wtf import FlaskForm
 from wtforms import HiddenField, PasswordField, StringField
 from wtforms.validators import Email, EqualTo, InputRequired, Length
 
+from fmchallengewebapp.rules import rules
 from .models import User
 
 
@@ -50,6 +52,9 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=40)])
     confirm = PasswordField('Repeat password',
         validators=[InputRequired(), EqualTo('password', message='Passwords must match')])
+    captcha_challenge = HiddenField(validators=[InputRequired()])
+    captcha_answer = StringField(description="Enter the word in all lowercase",
+                                 validators=[InputRequired(), Length(min=1, max=20)])
 
     def validate(self):
         """Validate the form."""
@@ -67,7 +72,34 @@ class RegisterForm(FlaskForm):
             self.email.errors.append('Email already registered')
             return False
 
+        try:
+            section, rule, word = self.captcha_challenge.data.split('-', 2)
+            rule = int(rule)
+            word = int(word)
+            if word <= 0:
+                raise ValueError
+        except (AttributeError, IndexError, TypeError, ValueError):
+            self.captcha_answer.errors.append('Invalid captcha challenge')
+            return False
+
+        answer = self.captcha_answer.data.strip().lower()
+        if not self.verify_captcha(answer, section, rule, word - 1):
+            self.captcha_answer.errors.append('Incorrect captcha answer')
+            return False
+
         return True
+
+    def verify_captcha(self, answer, section, rule, word):
+        to_space = '(),.:;'
+        xlate_table = str.maketrans(to_space, ' ' * len(to_space), '1234567890"\'\n-_')
+        try:
+            rule = rules[section][rule].strip().lower()
+            rule = re.sub(r'\w+://[a-z/.]+', '', rule)
+            rule = rule.translate(xlate_table)
+            egg = rule.split()[word]
+            return answer == egg
+        except (IndexError, KeyError, TypeError, ValueError):
+            return False
 
 
 class LoginForm(RedirectForm):

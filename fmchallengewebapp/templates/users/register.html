@@ -7,10 +7,12 @@
 <h1 class="mt-5">Create an Account:</h1>
 <form class="form-signin" id="registerForm" role="form" method="post" action="">
   {{ form.csrf_token }}
+  {{ form.captcha_challenge(value=captcha) }}
   {{ form_field(form.username, False) }}
   {{ form_field(form.email, False) }}
   {{ form_field(form.password, False) }}
-  {{ form_field(form.confirm, false) }}
+  {{ form_field(form.confirm, False) }}
+  {{ form_field(form.captcha_answer, captcha_label) }}
   <button type="submit">Register!</button>
 </form>
 <br/>

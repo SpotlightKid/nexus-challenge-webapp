@@ -2,6 +2,7 @@
 """User blueprint views."""
 
 # Standard library modules
+import random
 from datetime import datetime
 
 # Third-party modules
@@ -10,6 +11,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 # Application specific modules
 from fmchallengewebapp.extensions import login_manager
+from fmchallengewebapp.rules import rules
 from fmchallengewebapp.utils import in_submission_period, in_voting_period
 
 from .decorators import check_confirmed
@@ -58,7 +60,22 @@ def register():
         login_user(user)
         return redirect(url_for('user.unconfirmed'))
 
-    return render_template('users/register.html', form=form)
+    section = random.choice('ABCD')
+    captcha_info = {
+        'section': section,
+        'rule': random.randint(1, len(rules[section])),
+        'word': random.randint(1, 5)
+    }
+    captcha_label = (
+        "Anti-robot check: <em>which is the {word}. word of rule {section}.{rule} on the "
+        '<a href="/rules/" target="_new">rules</a> page?</em>'
+    ).format(**captcha_info)
+    return render_template(
+        'users/register.html',
+        form=form,
+        captcha="{section}-{rule}-{word}".format(**captcha_info),
+        captcha_label=captcha_label,
+    )
 
 
 @blueprint.route('/login', methods=['GET', 'POST'])
