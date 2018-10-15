@@ -9,8 +9,8 @@ Bugs
 Enhancements
 ------------
 * Command to send reminder email to participants, that they need to vote. - done
-* Add captcha to registration form (e.g. "Fill in third word from rule A.3")
-* Autolink URLs in Markdown track description and production notes
+* Add captcha to registration form (e.g. "Fill in third word from rule A.3") - done
+* Autolink URLs in Markdown track description and production notes - done
 
 
 Tasks

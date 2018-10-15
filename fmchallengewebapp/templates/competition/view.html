@@ -41,11 +41,11 @@
 
 <div class="flask-markdown shadow-sm rounded">
 <p><strong>Description:</strong></p>
-{{ entry.description | markdown }}
+{{ entry.description | markdown(autolink=True) }}
 </div>
 <div class="flask-markdown shadow-sm rounded">
 <p><strong>Production details:</strong></p>
-{{ entry.production_details | markdown }}
+{{ entry.production_details | markdown(autolink=True) }}
 </div>
 <p><a class="btn btn-secondary" href="{{ url_for('competition.list_entries') }}">All entries</a></p>
 {% endblock %}

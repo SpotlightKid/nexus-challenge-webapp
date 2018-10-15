@@ -108,7 +108,7 @@ title, artist or date (published) as well.
 {#
 
     <div class="track-description">
-      {{ entry.description | markdown }}
+      {{ entry.description | markdown(autolink=True) }}
     </div>
 #}
   </div>

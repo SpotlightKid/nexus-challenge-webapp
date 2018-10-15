@@ -39,11 +39,11 @@
 
 <div class="flask-markdown shadow-sm rounded">
 <p><strong>Description:</strong></p>
-{{ entry.description | markdown }}
+{{ entry.description | markdown(autolink=True) }}
 </div>
 <div class="flask-markdown shadow-sm rounded">
 <p><strong>Production details:</strong></p>
-{{ entry.production_details | markdown }}
+{{ entry.production_details | markdown(autolink=True) }}
 </div>
 {% if entry.is_published %}
   {% if entry.is_approved %}
