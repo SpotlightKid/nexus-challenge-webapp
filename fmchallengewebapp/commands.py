@@ -4,6 +4,7 @@
 # Standard library modules
 import datetime
 import os
+from email.utils import formataddr
 from glob import glob
 from subprocess import call
 
@@ -199,7 +200,7 @@ def publish_reminder(dry_run):
                     deadline=current_app.config['SUBMISSION_PERIOD_END']
                 )
                 subject = 'Reminder: your FM Challenge competition entry is still unpublished!'
-                recipient = "{} <{}>".format(entry.user.username, entry.user.email)
+                recipient = formataddr((entry.user.username, entry.user.email))
                 msg = Message(
                     subject,
                     recipients=[recipient],
@@ -224,10 +225,16 @@ def publish_reminder(dry_run):
 @email_group.command()
 @click.option('--dry-run', '-n', default=False, is_flag=True,
               help='Do not sent actual email, just print it')
+@click.option('--entry-id', '-e', type=int,
+              help='Send reminder only to user who submitted entry with given id')
 @with_appcontext
-def voting_reminder(dry_run):
+def voting_reminder(dry_run, entry_id=None):
     """Send an email to users who published a competition entry, reminding them to vote."""
-    entries = CompetitionEntry.query.filter_by(is_approved=True)
+    if entry_id:
+        entries = CompetitionEntry.query.filter_by(id=int(entry_id))
+    else:
+        entries = CompetitionEntry.query.filter_by(is_approved=True)
+
     click.echo("Sending entry voting reminder to {} users.".format(entries.count()))
 
     with mail.record_messages() as outbox, current_app.test_request_context():
@@ -241,7 +248,7 @@ def voting_reminder(dry_run):
                     user=entry.user,
                 )
                 subject = 'Reminder: your vote is needed in the FM Challenge!'
-                recipient = "{} <{}>".format(entry.user.username, entry.user.email)
+                recipient = formataddr((entry.user.username, entry.user.email))
                 msg = Message(
                     subject,
                     recipients=[recipient],
