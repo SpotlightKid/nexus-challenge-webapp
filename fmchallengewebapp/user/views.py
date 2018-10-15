@@ -112,31 +112,35 @@ def profile():
 @blueprint.route('/confirm/<token>')
 def confirm_email(token):
     """Handle request from confirmation email link."""
-    if not current_user.is_anonymous and current_user.is_confirmed:
-        flash('Account already confirmed.', 'success')
-    else:
-        max_age = current_app.config.get('REG_TOKEN_MAX_AGE', 3600 * 24 * 3)
-        email = confirm_token(token, expiration=max_age)
+    now = datetime.utcnow()
 
-        if email:
-            if not current_user.is_anonymous and email != current_user.email:
-                flash('Confirmation invalid for current user. Log out and try again', 'danger')
-                redirect_to = 'public.home'
-            else:
-                user = User.query.filter_by(email=email).first_or_404()
+    max_age = current_app.config.get('REG_TOKEN_MAX_AGE', 3600 * 24 * 10)
+    email = confirm_token(token, expiration=max_age)
 
-                if user.is_confirmed:
-                    flash('Account already confirmed.', 'success')
-                else:
-                    user.update(is_confirmed=True, confirmed_on=datetime.datetime.now())
-                    flash('You have confirmed your account. Thanks!', 'success')
-
-                if current_user.is_anonymous:
-                    login_user(user)
+    if email:
+        if not current_user.is_anonymous and email != current_user.email:
+            flash('Confirmation invalid for current user. Log out and try again', 'danger')
+            return redirect(url_for('public.home'))
         else:
-            flash('The confirmation link is invalid or has expired.', 'danger')
+            user = User.query.filter_by(email=email).first_or_404()
 
-    return redirect(url_for('competition.manage_entry'))
+            if user.is_confirmed:
+                flash('Account already confirmed.', 'success')
+            else:
+                user.update(is_confirmed=True, confirmed_on=now)
+                flash('You have confirmed your account. Thanks!', 'success')
+
+            if current_user.is_anonymous:
+                login_user(user)
+    else:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+
+    if in_submission_period(now):
+        return redirect(url_for('competition.manage_entry'))
+    elif in_voting_period(now):
+        return redirect(url_for('competition.vote'))
+    else:
+        return redirect(url_for('public.home'))
 
 
 @blueprint.route('/unconfirmed')
