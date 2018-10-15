@@ -1,0 +1,18 @@
+{% filter markdown %}
+Hello {{ user.username }},
+
+you sucessfully entered the competition with your entry title *“{{ entry.title }}”* and the
+voting period has commenced on **{{ voting_start.strftime('%Y-%m-%d %H:%M UTC') }}**.
+
+To be eligible to score in the competition and have a chance to win, you must vote before the
+voting period ends on **{{ voting_end.strftime('%Y-%m-%d %H:%M UTC') }}**! If you do **not vote**
+in time, your entry will be **disqualified**.
+
+Please note that you are not allowed and will not be able to vote for your own entry.
+
+You can listen to all competition entries and cast your vote at [{{ entry_url }}]({{ entry_url }})
+(you need to sign in).
+
+
+The Open Source Music FM Synthesizer Challenge
+{% endfilter %}

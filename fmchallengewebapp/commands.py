@@ -183,7 +183,7 @@ email_group = AppGroup('email')
               help='Do not sent actual email, just print it')
 @with_appcontext
 def publish_reminder(dry_run):
-    """Creates the admin user."""
+    """Send an email to users with unpublished competition entries."""
     entries = CompetitionEntry.query.filter_by(is_published=False)
     click.echo("Sending entry publication reminder to {} users.".format(entries.count()))
 
@@ -217,5 +217,47 @@ def publish_reminder(dry_run):
                            "See log for details".format(recipient))
             else:
                 click.echo("Entry publication reminder sent to '{}'.".format(recipient))
+
+    click.echo("\nAll done. {} emails sent.".format(len(outbox)))
+
+
+@email_group.command()
+@click.option('--dry-run', '-n', default=False, is_flag=True,
+              help='Do not sent actual email, just print it')
+@with_appcontext
+def voting_reminder(dry_run):
+    """Send an email to users who published a competition entry, reminding them to vote."""
+    entries = CompetitionEntry.query.filter_by(is_approved=True)
+    click.echo("Sending entry voting reminder to {} users.".format(entries.count()))
+
+    with mail.record_messages() as outbox, current_app.test_request_context():
+        for entry in entries:
+            try:
+                entry_url = "{}/vote/".format(current_app.config['SITE_URL'].rstrip('/'))
+                body = render_template(
+                    'competition/reminder_voting.html',
+                    entry_url=entry_url,
+                    entry=entry,
+                    user=entry.user,
+                )
+                subject = 'Reminder: your vote is needed in the FM Challenge!'
+                recipient = "{} <{}>".format(entry.user.username, entry.user.email)
+                msg = Message(
+                    subject,
+                    recipients=[recipient],
+                    html=body,
+                    sender=current_app.config.get('MAIL_DEFAULT_SENDER', 'noreply@example.com')
+                )
+
+                if dry_run:
+                    click.echo("\nTo: {}\nSubject: {}\n\n{}\n".format(recipient, subject, body))
+                else:
+                    mail.send(msg)
+            except Exception:
+                current_app.logger.exception("Error sending voting reminder.")
+                click.echo("Could not send voting reminder '{}'. "
+                           "See log for details".format(recipient))
+            else:
+                click.echo("Entry voting reminder sent to '{}'.".format(recipient))
 
     click.echo("\nAll done. {} emails sent.".format(len(outbox)))
