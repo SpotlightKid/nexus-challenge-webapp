@@ -19,12 +19,12 @@ from flask_wtf.csrf import CSRFProtect
 
 
 bcrypt = Bcrypt()
+cache = Cache()
 csrf_protect = CSRFProtect()
-login_manager = LoginManager()
 db = SQLAlchemy()
-misaka = Misaka()
+debug_toolbar = DebugToolbarExtension()
+login_manager = LoginManager()
 mail = Mail()
 migrate = Migrate()
+misaka = Misaka()
 pagedown = PageDown()
-cache = Cache()
-debug_toolbar = DebugToolbarExtension()
