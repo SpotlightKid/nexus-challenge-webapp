@@ -98,12 +98,13 @@ def register_shellcontext(app):
 
 def register_commands(app):
     """Register Click commands."""
-    app.cli.add_command(commands.test)
-    app.cli.add_command(commands.lint)
     app.cli.add_command(commands.clean)
-    app.cli.add_command(commands.urls)
+    app.cli.add_command(commands.compo_group)
     app.cli.add_command(commands.create_admin)
     app.cli.add_command(commands.email_group)
+    app.cli.add_command(commands.lint)
+    app.cli.add_command(commands.test)
+    app.cli.add_command(commands.urls)
 
 
 def register_context_processors(app):

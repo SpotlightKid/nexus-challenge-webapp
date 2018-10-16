@@ -6,6 +6,7 @@ import datetime
 import os
 from email.utils import formataddr
 from glob import glob
+from operator import itemgetter
 from subprocess import call
 
 # Third-party modules
@@ -268,3 +269,19 @@ def voting_reminder(dry_run, entry_id=None):
                 click.echo("Entry voting reminder sent to '{}'.".format(recipient))
 
     click.echo("\nAll done. {} emails sent.".format(len(outbox)))
+
+
+compo_group = AppGroup('compo')
+
+
+@compo_group.command()
+def print_scoreboard():
+    """Print list of entries with total score."""
+    results = []
+
+    for entry in CompetitionEntry.query.filter_by(is_approved=True):
+        points = sum(vote.points for vote in entry.votes)
+        results.append((points, entry))
+
+    for points, entry in sorted(results, key=itemgetter(0), reverse=True):
+        click.echo("{e.title} - {e.artist}: {p}".format(e=entry, p=points))

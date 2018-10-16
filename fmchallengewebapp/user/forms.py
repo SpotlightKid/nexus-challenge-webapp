@@ -12,6 +12,7 @@ from wtforms import HiddenField, PasswordField, StringField
 from wtforms.validators import Email, EqualTo, InputRequired, Length
 
 from fmchallengewebapp.rules import rules
+
 from .models import User
 
 
