@@ -97,8 +97,8 @@ def inject_site_info():
         site_description=current_app.config.get('SITE_DESCRIPTION'),
         site_url=current_app.config.get('SITE_URL'),
         site_author=current_app.config.get('SITE_AUTHOR'),
-        submission_end=current_app.config.get('SUBMISSION_PERIOD_START'),
-        submission_start=current_app.config.get('SUBMISSION_PERIOD_END'),
+        submission_start=current_app.config.get('SUBMISSION_PERIOD_START'),
+        submission_end=current_app.config.get('SUBMISSION_PERIOD_END'),
         voting_start=current_app.config.get('VOTING_PERIOD_START'),
         voting_end=current_app.config.get('VOTING_PERIOD_END'),
     )
