@@ -1,16 +1,28 @@
 TODO
 ====
 
+
 Bugs
 ----
 
 * Also display user vote when voting period is over
 
+
 Enhancements
 ------------
-* Command to send reminder email to participants, that they need to vote. - done
+
 * Add captcha to registration form (e.g. "Fill in third word from rule A.3") - done
 * Autolink URLs in Markdown track description and production notes - done
+
+
+New features
+------------
+
+* Cli command to send reminder email to participants, that they need to vote. - done
+* Cli command to print scoreboard
+* Voting results page
+* Voting trend graph
+* Competition statistics page
 
 
 Tasks
@@ -22,11 +34,38 @@ Tasks
   * KVR forum - done
   * Twitter - done
   * osamc.de - done
-  * LAA, LAU
+  * LAA, LAU - done
 * Send voting reminders. - done
 * Delete test entry and votes. - done
-* Clarify terms for sponsoring 2nd and 3rd prize. - in progerss
+* Clarify terms for sponsoring 2nd and 3rd prize. - in progress
 * Showcase track of competition entries for SC and/or YT (volunteers?)
 * Organize podcast about competition (volunteers?)
 * Create preset pack
-* Create "FM Challenge Sampler" archive
+* Create "FM Challenge Sampler" archive - in progress
+
+
+
+Possible Ways of Handling Voting Statistics / Trends:
+-----------------------------------------------------
+
+E = Everybody
+U = Registered users
+V = Voters
+C = Competition entrants
+
+
+1. No statistics or trends shown to anybody until voting is over
+
+2a. C can see total score of each track (i.e. score board at that point in time)
+2b. C can see total score of own track
+2c. C can see how often each track has been voted for (but not points per vote)
+2d. C can see how often own track has been voted for (but not points per vote)
+
+3a. V can see total score of each track
+3b. V can see how often each track has been voted for (but not points per vote)
+
+4a. U can see total score of each track
+4b. U can see how often each track has been voted for (but not points per vote)
+
+5a. E can see total score of each track
+5b. E can see how often each track has been voted for (but not points per vote)
