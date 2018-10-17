@@ -4,9 +4,11 @@
 # Standard library modules
 import datetime
 import os
+import time
 from email.utils import formataddr
-from glob import glob
+from glob import glob as fglob
 from operator import itemgetter
+from os.path import abspath, exists, join
 from subprocess import call
 
 # Third-party modules
@@ -14,12 +16,14 @@ import click
 from flask import current_app, render_template
 from flask.cli import AppGroup, with_appcontext
 from flask_mail import Message
+from internetarchive import download as ia_download, get_item as ia_get_item
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 from .competition.models import CompetitionEntry
 from .database import db
 from .extensions import mail
 from .user.models import User
+from .utils import canonify_track_url
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -53,7 +57,7 @@ def lint(fix_imports):
 
     if fix_imports:
         execute_tool('Fixing import order', 'isort', '-rc', 'fmchallengewebapp', 'tests',
-                     *glob('*.py'))
+                     *fglob('*.py'))
 
     execute_tool('Checking code style', 'flake8')
 
@@ -177,13 +181,13 @@ def create_admin(name, password):
         click.echo("User '{}' created.".format(name))
 
 
+# Commands to handle send notification and reminder emails
 email_group = AppGroup('email')
 
 
 @email_group.command()
 @click.option('--dry-run', '-n', default=False, is_flag=True,
               help='Do not sent actual email, just print it')
-@with_appcontext
 def publish_reminder(dry_run):
     """Send an email to users with unpublished competition entries."""
     entries = CompetitionEntry.query.filter_by(is_published=False)
@@ -228,11 +232,10 @@ def publish_reminder(dry_run):
               help='Do not sent actual email, just print it')
 @click.option('--entry-id', '-e', type=int,
               help='Send reminder only to user who submitted entry with given id')
-@with_appcontext
-def voting_reminder(dry_run, entry_id=None):
+def voting_reminder(dry_run=False, entry_id=None):
     """Send an email to users who published a competition entry, reminding them to vote."""
     if entry_id:
-        entries = CompetitionEntry.query.filter_by(id=int(entry_id))
+        entries = CompetitionEntry.query.filter_by(id=entry_id)
     else:
         entries = CompetitionEntry.query.filter_by(is_approved=True)
 
@@ -271,6 +274,7 @@ def voting_reminder(dry_run, entry_id=None):
     click.echo("\nAll done. {} emails sent.".format(len(outbox)))
 
 
+# Commands to handle competition maintenance tasks
 compo_group = AppGroup('compo')
 
 
@@ -285,3 +289,59 @@ def print_scoreboard():
 
     for points, entry in sorted(results, key=itemgetter(0), reverse=True):
         click.echo("{e.title} - {e.artist}: {p}".format(e=entry, p=points))
+
+
+@click.option('--dry-run', '-n', default=False, is_flag=True,
+              help='Do not actually download anything, just print what would be downloaded')
+@click.option('--entry-id', '-e', type=int,
+              help='Donwload only file of entry with given id')
+@click.option('--glob', '-g',
+              help='Restrict downloaded files to those matching given glob pattern')
+@click.argument('output_dir')
+@compo_group.command()
+def download_entries(output_dir, dry_run=False, entry_id=None, glob=None):
+    """Down all file of all or competition entries or a entry."""
+    if entry_id:
+        entries = CompetitionEntry.query.filter_by(id=entry_id)
+    else:
+        entries = CompetitionEntry.query.filter_by(is_approved=True)
+
+    try:
+        workdir = os.getcwd()
+        if not exists(output_dir):
+            os.makedirs(output_dir)
+        os.chdir(output_dir)
+
+        for entry in entries:
+            url, track_id = canonify_track_url(entry.url)
+
+            destdir = abspath(join(output_dir, track_id))
+            click.echo("Downloading files for item '{}' to directory '{}'...".format(
+                       track_id, destdir))
+
+            if dry_run:
+                try:
+                    item = ia_get_item(track_id, request_kwargs={'timeout': 30})
+                    metadata = item.item_metadata.get('metadata')
+                    if not metadata:
+                        raise ValueError("'%s' not found." % track_id)
+                except Exception as exc:
+                    click.echo("Could not get meta data for item '{}' from Archive.org: {}".format(
+                               track_id, exc))
+                else:
+                        for file in item.files:
+                            click.echo("'{}' size: {:3.2f} kB...".format(
+                                       file['name'], int(file.get('size', 0)) / 1024))
+            else:
+                try:
+                    ia_download(track_id, glob_pattern=glob, verbose=True,
+                                formats=['FLAC', 'Metadata'])
+                except Exception as exc:
+                    click.echo("Error downloading item '{}' from Archive.org: {}".format(
+                               track_id, exc))
+                # be nice (server drops connection frequently otherwise)
+                time.sleep(1.0)
+
+    except KeyboardInterrupt:
+        click.echo("Aborted.")
+
