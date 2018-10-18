@@ -7,54 +7,52 @@
 
 {% if in_voting_period %}
   {% if current_user.is_authenticated %}
-    {% if user_votes and user_votes.count() %}
+    {% if user_has_voted %}
     <p>Your vote was already registered. You can update your vote until the end of the voting
     period.</p>
-
-    <p style="text-align: center;"><a class="btn btn-primary"
-      href="{{ url_for('competition.submit_vote') }}">Update Vote!</a></p>
-
-    <p>Here is your vote:</p>
-    <p>
-      {% for vote in user_votes %}
-        <strong>{{ vote.points }} points:</strong>
-        <a href="{{ url_for('competition.view_entry', entry=vote.entry.id) }}"
-          >“{{ vote.entry.title }}”</a> by <em>{{ vote.entry.artist }}</em><br/>
-      {% endfor %}
-    </p>
     {% else %}
     <p>To cast your vote in the competition, please use the voting form:</p>
+    {% endif %}
 
     <p style="text-align: center;"><a class="btn btn-primary"
-      href="{{ url_for('competition.submit_vote') }}">Vote!</a></p>
-
-    {% endif %}
+      href="{{ url_for('competition.submit_vote') }}"
+      >{% if user_has_voted %}Update {% endif %}Vote!</a></p>
   {% else %}
-  {% filter markdown %}
-  To cast your vote in the competition, you must first
-  [register an account]({{ url_for('user.register') }}) on this site and then come back to this
-  page.
+    {% filter markdown %}
+To cast your vote in the competition, you must first
+[register an account]({{ url_for('user.register') }}) on this site and then come back to this
+page.
 
-  Already have an account? [Sign in]({{ url_for('user.login') }}).
-  {% endfilter %}
+Already have an account? [Sign in]({{ url_for('user.login') }}).
+    {% endfilter %}
   {% endif %}
-
-  <p>The voting period runs from
-    <strong>{{ voting_start.strftime('%Y-%m-%d %H:%M:%S UTC') }}</strong>
-    for <strong>ten days</strong> until
-    <strong>{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}</strong>.</p>
-{% else %}
-  {% filter markdown %}
-  The voting period runs from when the submission deadline for the competition has passed on
-  **{{ submission_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}** for **ten days** until
-  **{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}**.
-
-  {% if in_submission_period %}
-  In the meanwhile, have a listen to the entries submitted so far. And while you're here: have you
-  considered [entering the competition](/submit/)?
-  {% endif %}
-  {% endfilter %}
 {% endif %}
+
+{% if user_has_voted and now >= voting_start %}
+   <p>Here is your vote:</p>
+    <p>
+      {% for vote in user_votes %}
+      <strong>{{ vote.points }} points:</strong>
+      <a href="{{ url_for('competition.view_entry', entry=vote.entry.id) }}"
+        >“{{ vote.entry.title }}”</a> by <em>{{ vote.entry.artist }}</em><br/>
+      {% endfor %}
+    </p>
+{% endif %}
+{% filter markdown %}
+The voting period runs from **{{ voting_start.strftime('%Y-%m-%d %H:%M:%S UTC') }}** for
+**ten days** until **{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}**.
+
+{% if now >= voting_start %}
+There are **{{ num_entries }} competition entries** and **{{ num_votes }} users have voted** on
+them{% if in_voting_period %} so far{% endif %}.
+{% endif %}
+{% if in_submission_period %}
+In the meanwhile, have a listen to the entries submitted so far. And while you're here: have you
+considered [entering the competition](/submit/)?
+{% endif %}
+{% endfilter %}
+
+{% if now >= submission_start %}
 {% filter markdown %}
 
 ## Competition Entries
@@ -78,7 +76,8 @@ title, artist or date (published) as well.
     <a href="{{ url_for('competition.list_entries', order='artist', desc=1 if (order == 'artist' and not desc) else 0) }}"
       >Artist{% if order == 'artist' and not desc %} (desc){% endif %}</a>&nbsp;|&nbsp;
     <a href="{{ url_for('competition.list_entries', order='published_on', desc=1 if (order == 'published_on' and not desc) else 0) }}"
-      >Date{% if order == 'published_on' and not desc %} (desc){% endif %}</a>
+      >Date{% if order == 'published_on' and not desc %} (desc){% endif %}</a>{% if order %}&nbsp;|&nbsp;<a
+      href="{{ url_for('competition.list_entries') }}">Random</a>{% endif %}
   </p>
 
   {% for entry in entries %}
@@ -104,15 +103,9 @@ title, artist or date (published) as well.
     <div class="track-player">
       {{ archiveorg_player(entry.url, width='100%', id="archiveorg-player-%i" % entry.id) | safe }}
     </div>
-
-{#
-
-    <div class="track-description">
-      {{ entry.description | markdown(autolink=True) }}
-    </div>
-#}
   </div>
   {% endfor %}
 </div>
+{% endif %}
 {% endif %}
 {% endblock %}

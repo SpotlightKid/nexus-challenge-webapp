@@ -24,7 +24,8 @@ in random order by default, but you can choose to display the list sorted by tit
     <a href="{{ url_for('competition.list_entries', order='artist', desc=1 if (order == 'artist' and not desc) else 0) }}"
       >Artist{% if order == 'artist' and not desc %} (desc){% endif %}</a>&nbsp;|&nbsp;
     <a href="{{ url_for('competition.list_entries', order='published_on', desc=1 if (order == 'published_on' and not desc) else 0) }}"
-      >Date{% if order == 'published_on' and not desc %} (desc){% endif %}</a>
+      >Date{% if order == 'published_on' and not desc %} (desc){% endif %}</a>{% if order %}&nbsp;|&nbsp;<a
+      href="{{ url_for('competition.list_entries') }}">Random</a>{% endif %}
   </p>
 
   {% for entry in entries %}

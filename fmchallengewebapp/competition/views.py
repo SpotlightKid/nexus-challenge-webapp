@@ -50,9 +50,11 @@ def vote():
     desc = to_bool(request.args.get('desc'))
 
     if order in ('artist', 'title', 'published_on'):
+        num_entries = entries.count()
         entries = sorted(entries, key=attrgetter(order), reverse=desc)
     else:
         entries = list(entries)
+        num_entries = len(entries)
         random.shuffle(entries)
 
     if current_user.is_authenticated:
@@ -68,8 +70,11 @@ def vote():
         in_submission_period=in_submission_period(now),
         in_voting_period=in_voting_period(now),
         now=now,
+        num_entries=num_entries,
+        num_votes=Vote.query.group_by(Vote.user_id).count(),
         order=order,
-        user_votes=user_votes
+        user_votes=user_votes,
+        user_has_voted=user_votes and user_votes.count()
     )
 
 
