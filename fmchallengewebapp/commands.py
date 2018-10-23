@@ -279,6 +279,16 @@ compo_group = AppGroup('compo')
 
 
 @compo_group.command()
+def check_votes():
+    """Display list of competition entries and whether the user, who submitted it, has voted."""
+    for entry in CompetitionEntry.query.filter_by(is_approved=True).order_by('title'):
+        click.echo("{e.artist} - {e.title}".format(e=entry))
+        click.echo("User: {}".format(entry.user.username))
+        click.echo("Voted: {}".format("yes" if bool(entry.user.votes) else "no"))
+        click.echo('')
+
+
+@compo_group.command()
 def print_scoreboard():
     """Print list of entries with total score."""
     results = []
@@ -288,26 +298,25 @@ def print_scoreboard():
         results.append((points, entry))
 
     for points, entry in sorted(results, key=itemgetter(0), reverse=True):
-        click.echo("{e.title} - {e.artist}: {p}".format(e=entry, p=points))
+        click.echo("{e.artist} - {e.title}: {p}".format(e=entry, p=points))
 
 
 @click.option('--dry-run', '-n', default=False, is_flag=True,
               help='Do not actually download anything, just print what would be downloaded')
 @click.option('--entry-id', '-e', type=int,
-              help='Donwload only file of entry with given id')
+              help='Download only file of entry with given id')
 @click.option('--glob', '-g',
               help='Restrict downloaded files to those matching given glob pattern')
 @click.argument('output_dir')
 @compo_group.command()
 def download_entries(output_dir, dry_run=False, entry_id=None, glob=None):
-    """Down all file of all or competition entries or a entry."""
+    """Download all files of all or competition entries or of one entry."""
     if entry_id:
         entries = CompetitionEntry.query.filter_by(id=entry_id)
     else:
         entries = CompetitionEntry.query.filter_by(is_approved=True)
 
     try:
-        workdir = os.getcwd()
         if not exists(output_dir):
             os.makedirs(output_dir)
         os.chdir(output_dir)
@@ -345,3 +354,104 @@ def download_entries(output_dir, dry_run=False, entry_id=None, glob=None):
     except KeyboardInterrupt:
         click.echo("Aborted.")
 
+
+def label_barh(ax, fmt="{}", spacing=5, align='left', is_inside=False, **kwargs):
+    """Attach a text label to each horizontal bar displaying its y value.
+
+    fmt     - Format string for labels or callable with receives a value and gives
+              it back formatted as a string.
+    spacing - Number of points between bar and label (default: 5).
+    align   - Alignment for positive values.
+
+
+    """
+    for rect in ax.patches:
+        # Get X and Y placement of label from rect.
+        x_value = rect.get_width()
+        y_value = rect.get_y() + rect.get_height() / 2
+
+        # Use X value as label and format number accodring to given fmt (function)
+        if callable(fmt):
+            label = fmt(x_value)
+        else:
+            label = fmt.format(x_value)
+
+        # If value of bar is negative: Place label left of bar
+        if x_value < 0 or is_inside:
+            # Invert space to place label to the left
+            spacing *= -1
+            # Horizontally align label at right
+            align = 'right'
+
+        # Create annotation
+        ax.annotate(
+            label,                          # Use `label` as label
+            (x_value, y_value),             # Place label at end of the bar
+            xytext=(spacing, 0),            # Horizontally shift label by `spacing`
+            textcoords="offset points",     # Interpret `xytext` as offset in points
+            va='center',                    # Vertically center label
+            ha=align,                       # Horizontally align label according to sign
+            **kwargs)
+
+
+def ellip(s, maxlen=25, suffix="…"):
+    """Truncate string to maxlen if neccessary.
+
+    If string is truncated, suffix it with suffix, whose length is included in maxlen.
+
+    """
+    if len(s) < maxlen:
+        return s
+    else:
+        return s[:maxlen - len(suffix)] + suffix
+
+
+@click.option('--output', '-o', help='Save figure to given file name.')
+@click.option('--toolkit', '-t', default='Qt5Agg',
+              help="Toolkit matplotlib shoud use (default: 'Qt5Agg').")
+@compo_group.command()
+def scoregraph(output, toolkit):
+    """Generate a horizontal bar graph showing the total score of each track."""
+    import matplotlib
+    matplotlib.use(toolkit)
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import pandas as pd
+
+    # Accumulate data
+    entries = []
+    for entry in CompetitionEntry.query.filter_by(is_approved=True):
+        data = {
+            'title': "{title}\nby {artist}".format(artist=ellip(entry.artist),
+                                                   title=ellip(entry.title)),
+            'Total score': sum(vote.points for vote in entry.votes),
+            '# of 5 point votes': sum(1 for vote in entry.votes if vote.points == 5),
+            '# of 4 point votes': sum(1 for vote in entry.votes if vote.points == 4),
+        }
+        entries.append(data)
+
+    entries.sort(key=itemgetter('Total score'), reverse=False)
+    entries_df = pd.DataFrame(entries)
+
+    # build graph
+    sns.set(style="whitegrid")
+
+    # Plot the total score for each entry
+    sns.set_color_codes("pastel")
+    ax = entries_df.plot(kind='barh', figsize=(20, 10))
+    ax.set_yticklabels(e['title'] for e in entries)
+
+    label_barh(ax, lambda x: "{:d}".format(int(x)), color="dimgrey", fontsize="small")
+
+    # Add a legend and informative axis label
+    ax.legend(ncol=2, loc="lower right", frameon=True)
+    ax.set(ylabel="", xlabel="Points")
+    ax.set_title("Total score per competition entry", fontsize='x-large')
+
+    sns.despine(left=True, bottom=True)
+
+    if output:
+        plt.savefig(output)
+        click.echo("Figure saved as '{}'.".format(output))
+    else:
+        plt.show()
