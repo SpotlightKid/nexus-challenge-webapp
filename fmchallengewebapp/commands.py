@@ -455,3 +455,32 @@ def scoregraph(output, toolkit):
         click.echo("Figure saved as '{}'.".format(output))
     else:
         plt.show()
+
+
+
+@click.option('--exclude', '-e', help='Comma separated list of usernames to exclude.')
+@compo_group.command()
+def raffle(exclude):
+    """Select a random voter as the winner of the raffle."""
+    import random
+
+    if isinstance(exclude, str):
+        exclude = set(username.strip() for username in exclude.split(','))
+    elif exclude is None:
+        exclude = set()
+
+    # collect elegible users
+    usernames = []
+    for user in User.query.filter_by(is_confirmed=True):
+        if user.votes and user.username not in exclude:
+            usernames.append(user.username)
+
+    click.echo("Selecting raffle winner from {:d} elegible voters...\n".format(len(usernames)))
+
+    # just for good measure :)
+    random.shuffle(usernames)
+
+    # do the draw
+    winner = random.choice(usernames)
+
+    click.echo("The winner of the raffle is:\n\n*** {} ***\n".format(winner))
