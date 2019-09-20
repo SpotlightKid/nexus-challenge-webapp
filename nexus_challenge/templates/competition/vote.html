@@ -40,7 +40,7 @@ Already have an account? [Sign in]({{ url_for('user.login') }}).
 {% endif %}
 {% filter markdown %}
 The voting period runs from **{{ voting_start.strftime('%Y-%m-%d %H:%M:%S UTC') }}** for
-**ten days** until **{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}**.
+**seven days** until **{{ voting_end.strftime('%Y-%m-%d %H:%M:%S UTC') }}**.
 
 {% if now >= voting_start %}
 There are **{{ num_entries }} competition entries** and **{{ num_votes }} users have voted** on
