@@ -52,9 +52,10 @@ SITE_DESCRIPTION = "Let's make some awesome Open Source music!"
 NAVIGATION_LINKS = (
     ("/", "The Challenge"),
     ("/rules/", "Rules"),
+    ("/faq/", "FAQ"),
     ("/submit/", "Enter"),
     ("/vote/", "Voting"),
-    ("/prizes/", "Prizes"),
+    #("/prizes/", "Prizes"),
     #("/fmsynths/", "FM Synths"),
     ("mailto:challenge@osamc.de", "Contact"),
 )
