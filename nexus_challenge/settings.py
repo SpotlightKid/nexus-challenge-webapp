@@ -36,6 +36,7 @@ MAIL_USE_TLS = env.bool('APP_MAIL_USE_TLS', default=False)
 MAIL_USE_SSL = env.bool('APP_MAIL_USE_SSL', default=True)
 MAIL_PORT = env.int('APP_MAIL_PORT', default=465 if MAIL_USE_SSL else 587)
 MAIL_SUPPRESS_SEND = env.bool('MAIL_SUPPRESS_SEND', default=False)
+MAIL_DEBUG = env.bool('MAIL_DEBUG', default=False)
 
 MAIL_USERNAME = env.str('APP_MAIL_USERNAME')
 MAIL_PASSWORD = env.str('APP_MAIL_PASSWORD')
