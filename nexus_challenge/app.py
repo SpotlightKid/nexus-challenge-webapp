@@ -30,7 +30,7 @@ def _check_config_variables_are_set(config):
         'SQLALCHEMY_DATABASE_URI is not set, set the env variable DATABASE_URL.'
 
 
-def create_app(config_object='fmchallengewebapp.settings'):
+def create_app(config_object='nexus_challenge.settings'):
     """An application factory.
 
     As explained here: http://flask.pocoo.org/docs/patterns/appfactories/.

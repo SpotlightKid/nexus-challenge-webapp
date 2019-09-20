@@ -1,8 +1,8 @@
 #!/bin/bash
 
-VENV="${VENV:-fmchallenge37}"
+VENV="${VENV:-nexus-challenge37}"
 
-cd "$HOME"/src/fmchallenge-webapp
+cd "$HOME"/src/nexus-challenge-webapp
 export FLASK_APP=autoapp.py
-source "$HOME"/etc/fmchallenge-webapp-prod.env
+source "$HOME"/etc/nexus-challenge-webapp-prod.env
 exec "$HOME"/.pyenv/versions/$VENV/bin/flask shell

@@ -11,7 +11,7 @@ from wtforms import SelectField, StringField
 from wtforms.validators import AnyOf, InputRequired, Length
 
 # Application specific modules
-from fmchallengewebapp.utils import canonify_track_url, format_duration
+from nexus_challenge.utils import canonify_track_url, format_duration
 
 from .models import CompetitionEntry
 

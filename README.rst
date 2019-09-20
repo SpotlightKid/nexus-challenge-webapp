@@ -1,8 +1,8 @@
 ===============================
-FM Challenge Web App
+Nexus Challenge Web App
 ===============================
 
-Dynamic web site for the Open Source FM Synthesizer Challenge
+Dynamic web site for the Open Source Music Nexus Challenge
 
 
 Quickstart
@@ -10,8 +10,8 @@ Quickstart
 
 Run the following commands to bootstrap your environment ::
 
-    git clone https://github.com/SpotlightKid/fmchallengewebapp
-    cd fmchallengewebapp
+    git clone https://github.com/SpotlightKid/nexus-challenge-webapp
+    cd nexus-challenge-webapp
     pip install -r requirements/dev.txt
     cp env.example .env
 

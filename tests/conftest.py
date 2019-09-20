@@ -6,8 +6,8 @@ import pytest
 from webtest import TestApp
 
 # Application specific modules
-from fmchallengewebapp.app import create_app
-from fmchallengewebapp.database import db as _db
+from nexus_challenge.app import create_app
+from nexus_challenge.database import db as _db
 
 from .factories import UserFactory
 

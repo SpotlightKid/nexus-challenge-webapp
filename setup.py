@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# setup.py - Setup file for the fmchallenge-webapp Flask app
+# setup.py - Setup file for the Mexus-Challenge-WebApp Flask app
 #
 
 # Standard library modules
@@ -91,14 +91,14 @@ class ToxTestCommand(distutils.cmd.Command):
 
 
 setup(
-    name='FMChallenge-WebApp',
+    name='Nexus-Challenge-WebApp',
     version='0.1.0',
-    keywords='webapp,flask,competition,osamc,fm synthesis',
+    keywords='webapp,flask,competition,osamc,open source music',
     author='Christopher Arndt',
     author_email='chris@chrisarndt.de',
-    url='https://github.com/SpotlightKid/fnmchallenge-webapp',
+    url='https://github.com/SpotlightKid/nexus-challenge-webapp',
     license='MIT License',
-    description='Dynamic part of the web site for the Open Source FM Synthesizer Challenge',
+    description='Dynamic part of the web site for the Open Source Music Nexus Challenge',
     classifiers=classifiers,
     long_description=read('README.rst'),
     packages=find_packages(),

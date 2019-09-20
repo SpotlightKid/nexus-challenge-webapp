@@ -11,10 +11,10 @@ from flask import Blueprint, current_app, flash, redirect, render_template, requ
 from flask_login import current_user, login_required
 
 # Application specific modules
-from fmchallengewebapp.user.decorators import check_confirmed, check_is_admin
-from fmchallengewebapp.user.email import start_send_email_task
-from fmchallengewebapp.utils import (archiveorg_player, canonify_track_url, in_submission_period,
-                                     in_voting_period, to_bool)
+from nexus_challenge.user.decorators import check_confirmed, check_is_admin
+from nexus_challenge.user.email import start_send_email_task
+from nexus_challenge.utils import (archiveorg_player, canonify_track_url, in_submission_period,
+                                   in_voting_period, to_bool)
 
 from .forms import SubmitCompetitionEntryForm, VotingForm
 from .models import CompetitionEntry, Vote
@@ -372,7 +372,7 @@ def approve(entry):
                 entry=entry,
                 user=current_user,
                 approved_on=datetime.utcnow())
-            subject = 'Your FM Challenge competition entry has been approved'
+            subject = 'Your Nexus Challenge competition entry has been approved'
             start_send_email_task(entry.user.email, subject, html)
         except Exception:
             current_app.logger.exception("Error sending entry approval notification.")

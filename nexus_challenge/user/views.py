@@ -10,9 +10,9 @@ from flask import Blueprint, current_app, flash, redirect, render_template, requ
 from flask_login import current_user, login_required, login_user, logout_user
 
 # Application specific modules
-from fmchallengewebapp.extensions import login_manager
-from fmchallengewebapp.rules import rules
-from fmchallengewebapp.utils import in_submission_period, in_voting_period
+from nexus_challenge.extensions import login_manager
+from nexus_challenge.rules import rules
+from nexus_challenge.utils import in_submission_period, in_voting_period
 
 from .decorators import check_confirmed
 from .email import start_send_email_task

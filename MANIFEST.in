@@ -5,8 +5,8 @@ include Makefile
 include requirements.txt
 include tox.ini pytest.ini
 
-graft fmchallengewebapp/static
-graft fmchallengewebapp/templates
+graft nexus_challenge/static
+graft nexus_challenge/templates
 graft migrations
 graft requirements
 

@@ -2,7 +2,7 @@
 """Test forms."""
 
 # Application specific modules
-from fmchallengewebapp.user.forms import LoginForm, RegisterForm
+from nexus_challenge.user.forms import LoginForm, RegisterForm
 
 
 class TestRegisterForm:

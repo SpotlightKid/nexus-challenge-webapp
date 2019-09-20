@@ -1,5 +1,5 @@
 /*
- * Main Javascript file for fmchallengewebapp.
+ * Main Javascript file for nexus-challenge-webapp.
  *
  * This file bundles all of your javascript together using webpack.
  */

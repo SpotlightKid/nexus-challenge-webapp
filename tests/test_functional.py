@@ -9,7 +9,7 @@ See: http://webtest.readthedocs.org/
 from flask import url_for
 
 # Application specific modules
-from fmchallengewebapp.user.models import User
+from nexus_challenge.user.models import User
 
 from .factories import UserFactory
 

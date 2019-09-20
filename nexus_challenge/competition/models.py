@@ -5,7 +5,7 @@
 import datetime as dt
 
 # Application specific modules
-from fmchallengewebapp.database import Column, Model, SurrogatePK, db, reference_col, relationship
+from nexus_challenge.database import Column, Model, SurrogatePK, db, reference_col, relationship
 
 
 class CompetitionEntry(SurrogatePK, Model):

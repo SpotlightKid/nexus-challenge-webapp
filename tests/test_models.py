@@ -8,7 +8,7 @@ import datetime as dt
 import pytest
 
 # Application specific modules
-from fmchallengewebapp.user.models import Role, User
+from nexus_challenge.user.models import Role, User
 
 from .factories import UserFactory
 

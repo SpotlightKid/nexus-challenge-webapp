@@ -56,7 +56,7 @@ def lint(fix_imports):
             exit(rv)
 
     if fix_imports:
-        execute_tool('Fixing import order', 'isort', '-rc', 'fmchallengewebapp', 'tests',
+        execute_tool('Fixing import order', 'isort', '-rc', 'nexus_challenge', 'tests',
                      *fglob('*.py'))
 
     execute_tool('Checking code style', 'flake8')
@@ -204,7 +204,7 @@ def publish_reminder(dry_run):
                     user=entry.user,
                     deadline=current_app.config['SUBMISSION_PERIOD_END']
                 )
-                subject = 'Reminder: your FM Challenge competition entry is still unpublished!'
+                subject = 'Reminder: your Nexus Challenge competition entry is still unpublished!'
                 recipient = formataddr((entry.user.username, entry.user.email))
                 msg = Message(
                     subject,
@@ -251,7 +251,7 @@ def voting_reminder(dry_run=False, entry_id=None):
                     entry=entry,
                     user=entry.user,
                 )
-                subject = 'Reminder: your vote is needed in the FM Challenge!'
+                subject = 'Reminder: your vote is needed in the Nexus Challenge!'
                 recipient = formataddr((entry.user.username, entry.user.email))
                 msg = Message(
                     subject,

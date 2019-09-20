@@ -9,8 +9,8 @@ from flask_login import UserMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 
 # Application specific modules
-from fmchallengewebapp.database import Column, Model, SurrogatePK, db, reference_col, relationship
-from fmchallengewebapp.extensions import bcrypt
+from nexus_challenge.database import Column, Model, SurrogatePK, db, reference_col, relationship
+from nexus_challenge.extensions import bcrypt
 
 
 class Role(SurrogatePK, Model):

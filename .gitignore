@@ -50,8 +50,8 @@ env/
 /node_modules/
 
 # webpack-built files
-/fmchallengewebapp/static/build/
-/fmchallengewebapp/webpack/manifest.json
+/nexus_challenge/static/build/
+/nexus_challenge/webpack/manifest.json
 
 # Configuration
 .env

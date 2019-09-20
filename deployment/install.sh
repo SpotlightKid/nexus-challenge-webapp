@@ -6,11 +6,11 @@ mkdir -p "$HOME"/bin
 mkdir -p "$HOME"/etc
 mkdir -p "$HOME"/htdocs
 mkdir -p "$HOME"/var/{db,log,run,backup}
-install -m 640 deployment/fmchallenge-webapp-prod.env "$HOME"/etc
-install -m 755 deployment/start-fmchallenge-webapp.sh "$HOME"/bin/start-fmchallenge-webapp.sh
-sudo install -m 644 deployment/fmchallenge-webapp-nginx.conf /etc/nginx/fmchallenge-webapp.conf
-sudo install -m 644 deployment/fmchallenge-webapp-supervisord.conf /etc/supervisord/conf.d/fmchallenge-webapp.conf
-ln -sf "$(pwd)"/fmchallenge/static "$HOME"/htdocs
+install -m 640 deployment/nexus-challenge-webapp-prod.env "$HOME"/etc
+install -m 755 deployment/start-nexus-challenge-webapp.sh "$HOME"/bin/start-nexus-challenge-webapp.sh
+sudo install -m 644 deployment/nexus-challenge-webapp-nginx.conf /etc/nginx/nexus-challenge-webapp.conf
+sudo install -m 644 deployment/nexus-challenge-webapp-supervisord.conf /etc/supervisord/conf.d/nexus-challenge-webapp.conf
+ln -sf "$(pwd)"/nexus-challenge/static "$HOME"/htdocs
 
 if [ -n "$VIRTUAL_ENV" ]
     pip install .

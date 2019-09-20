@@ -6,8 +6,8 @@ from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 
 # Application specific modules
-from fmchallengewebapp.database import db
-from fmchallengewebapp.user.models import User
+from nexus_challenge.database import db
+from nexus_challenge.user.models import User
 
 
 class BaseFactory(SQLAlchemyModelFactory):

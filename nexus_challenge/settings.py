@@ -40,22 +40,22 @@ MAIL_SUPPRESS_SEND = env.bool('MAIL_SUPPRESS_SEND', default=False)
 MAIL_USERNAME = env.str('APP_MAIL_USERNAME')
 MAIL_PASSWORD = env.str('APP_MAIL_PASSWORD')
 
-MAIL_DEFAULT_SENDER = env.str('APP_MAIL_DEFAULT_SENDER', default='fmchallenge@osamc.de')
+MAIL_DEFAULT_SENDER = env.str('APP_MAIL_DEFAULT_SENDER', default='challenge@osamc.de')
 
 SITE_AUTHOR = "Open Source Audio Meeting Cologne"
-SITE_TITLE = "Open Source Music FM Synthesizer Challenge"
-SITE_URL = "https://fmchallenge.osamc.de/"
-SITE_EMAIL = "fmchallenge@osamc.de"
+SITE_TITLE = "Open Source Music Nexus Challenge"
+SITE_URL = "https://nexus-challenge.osamc.de/"
+SITE_EMAIL = "challenge@osamc.de"
 SITE_ADMIN_EMAIL = "chris@chrisarndt.de"
-SITE_DESCRIPTION = "Let's create awesome music with Open Source FM Synthesizers!"
+SITE_DESCRIPTION = "Let's make some awesome Open Source music!"
 NAVIGATION_LINKS = (
     ("/", "The Challenge"),
     ("/rules/", "Rules"),
     ("/submit/", "Enter"),
     ("/vote/", "Voting"),
     ("/prizes/", "Prizes"),
-    ("/fmsynths/", "FM Synths"),
-    ("mailto:fmchallenge@osamc.de", "Contact"),
+    #("/fmsynths/", "FM Synths"),
+    ("mailto:challenge@osamc.de", "Contact"),
 )
 SOCIAL_BUTTONS_CODE = (
     'https://twitter.com/osamCologne',

@@ -6,8 +6,8 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_user
 
 # Application specific modules
-from fmchallengewebapp.user.forms import LoginForm
-from fmchallengewebapp.utils import flash_errors
+from nexus_challenge.user.forms import LoginForm
+from nexus_challenge.utils import flash_errors
 
 
 blueprint = Blueprint('public', __name__, static_folder='../static')

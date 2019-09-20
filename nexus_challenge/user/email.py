@@ -9,7 +9,7 @@ from flask import current_app
 from flask_mail import Message
 
 # Application specific modules
-from fmchallengewebapp.extensions import mail
+from nexus_challenge.extensions import mail
 
 
 def send_email(app, recipient, subject, template):
