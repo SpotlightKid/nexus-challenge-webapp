@@ -12,7 +12,7 @@ fi
 
 if [ -n "$VENV" -a -d "$VENV_ROOT" ]; then
     exec "$VENV_ROOT/bin/gunicorn" \
-        -b 127.0.0.1:8088 \
+        -b 127.0.0.1:8089 \
         --reuse-port \
         -p "$HOME/var/run/nexus-challenge-webapp.pid" \
         --access-logfile "$HOME/var/log/nexus-challenge-webapp-access.log" \
