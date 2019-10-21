@@ -12,7 +12,7 @@ sudo install -m 644 deployment/nexus-challenge-webapp-nginx.conf /etc/nginx/nexu
 sudo install -m 644 deployment/nexus-challenge-webapp-supervisord.conf /etc/supervisord/conf.d/nexus-challenge-webapp.conf
 ln -sf "$(pwd)"/nexus_challenge/static "$HOME"/htdocs
 
-if [ -n "$VIRTUAL_ENV" ]
+if [ -n "$VIRTUAL_ENV" ]; then
     pip install .
 else
     echo "Activate the virtual environment for this app and run 'pip install .'"
