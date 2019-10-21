@@ -53,9 +53,10 @@ NAVIGATION_LINKS = (
     ("/", "The Challenge"),
     ("/rules/", "Rules"),
     ("/faq/", "FAQ"),
-    ("/submit/", "Enter"),
+    #("/submit/", "Enter"),
     ("/vote/", "Voting"),
-    #("/prizes/", "Prizes"),
+    ("/list/", "Entries"),
+    ("/prizes/", "Prizes"),
     #("/fmsynths/", "FM Synths"),
     ("mailto:challenge@osamc.de", "Contact"),
 )
