@@ -288,8 +288,10 @@ def check_votes():
         click.echo('')
 
 
+@click.option('--anonymize', '-a', default=False, is_flag=True,
+              help='Do not reveal artist or song name, just fake names')
 @compo_group.command()
-def print_scoreboard():
+def print_scoreboard(anonymize=False):
     """Print list of entries with total score."""
     results = []
 
@@ -297,8 +299,11 @@ def print_scoreboard():
         points = sum(vote.points for vote in entry.votes)
         results.append((points, entry))
 
-    for points, entry in sorted(results, key=itemgetter(0), reverse=True):
-        click.echo("{e.artist} - {e.title}: {p}".format(e=entry, p=points))
+    for i, (points, entry) in enumerate(sorted(results, key=itemgetter(0), reverse=True)):
+        if anonymize:
+            click.echo("artist #{i} - <hidden title>: {p}".format(i=i, p=points))
+        else:
+            click.echo("{e.artist} - {e.title}: {p}".format(e=entry, p=points))
 
 
 @click.option('--dry-run', '-n', default=False, is_flag=True,
@@ -430,7 +435,8 @@ def scoregraph(output, toolkit):
         }
         entries.append(data)
 
-    entries.sort(key=itemgetter('Total score'), reverse=False)
+    entries.sort(key=itemgetter('Total score', '# of 5 point votes', '# of 5 point votes'),
+                 reverse=False)
     entries_df = pd.DataFrame(entries)
 
     # build graph
