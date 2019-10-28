@@ -2,6 +2,15 @@ TODO
 ====
 
 
+Ideas for 2020 Challenge
+------------------------
+
+* Look Ma, no drums!
+* Given musical motive (snippet) has to be used
+* Musical rounds (react to to somebody's track). But difficult for timing.
+* Cooperation (each submission must be by at least 2 artists cooperating)
+
+
 Bugs
 ----
 
@@ -18,31 +27,32 @@ Enhancements
 New features
 ------------
 
-* Cli command to send reminder email to participants, that they need to vote. - done
-* Cli command to print scoreboard
-* Voting results page
+* Multi-language support for Nikola site and Flask webapp (integrate weblate.org?)
+* OAuth support for logging in with FB, Google, Apple, Github etc. account
 * Voting trend graph
 * Competition statistics page
+
+* Cli command to send reminder email to participants, that they need to vote. - done
+* Cli command to print scoreboard - done
+* Voting results page - done
 
 
 Tasks
 -----
 
+* Delete test entry and votes
+* Showcase track of competition entries for SC and/or YT (volunteers?)
+* Organize podcast about competition (volunteers?)
+* Create preset pack
+
 * Announcement, that voting period has begun (forums, mailing lists).
   * Linuxmusisians Forum - done
-  * Musikerboard - done
   * KVR forum - done
   * Twitter - done
   * osamc.de - done
   * LAA, LAU - done
 * Send voting reminders. - done
-* Delete test entry and votes. - done
-* Clarify terms for sponsoring 2nd and 3rd prize. - in progress
-* Showcase track of competition entries for SC and/or YT (volunteers?)
-* Organize podcast about competition (volunteers?)
-* Create preset pack
-* Create "FM Challenge Sampler" archive - in progress
-
+* Create "Nexus Challenge Sampler" archive - done
 
 
 Possible Ways of Handling Voting Statistics / Trends:
