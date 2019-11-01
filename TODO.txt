@@ -9,6 +9,15 @@ Ideas for 2020 Challenge
 * Given musical motive (snippet) has to be used
 * Musical rounds (react to to somebody's track). But difficult for timing.
 * Cooperation (each submission must be by at least 2 artists cooperating)
+* A set of instrument und effects (plugins) has to be used.
+
+  It's like the One Synth Challenge only more strict
+  (because effects are also limited to a given set).
+
+  An example: "fluid3 soundfont and calf plugins".
+
+  Sequencer / DAW can be chosen freely so long as they are Open Source.
+* Only allow Open Source DAWs next year?
 
 
 Bugs
