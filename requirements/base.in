@@ -1,0 +1,45 @@
+# Everything needed in production
+
+# Flask
+Flask
+MarkupSafe>=1.1.1
+
+# Database
+Flask-SQLAlchemy
+psycopg2
+
+# Migrations
+Flask-Migrate
+
+# Mail
+Flask-Mail
+
+# Markdown filter & in-page editor
+Flask-Misaka
+Flask-PageDown
+
+# Forms
+Flask-WTF
+
+# Auth
+Flask-Login
+Flask-Bcrypt
+
+# Caching
+Flask-Caching>=1.0.0
+
+# Debug toolbar
+Flask-DebugToolbar
+
+# Environment variable parsing
+environs
+
+# Web & API clients
+internetarchive
+
+# Graphs
+seaborn
+matplotlib
+pandas
+numpy
+scipy

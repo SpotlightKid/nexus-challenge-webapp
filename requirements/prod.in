@@ -1,0 +1,5 @@
+# Everything needed in production
+-r base.txt
+
+# Deployment
+gunicorn
