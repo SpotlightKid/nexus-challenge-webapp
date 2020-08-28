@@ -20,6 +20,7 @@ Flask-PageDown
 
 # Forms
 Flask-WTF
+email-validator
 
 # Auth
 Flask-Login

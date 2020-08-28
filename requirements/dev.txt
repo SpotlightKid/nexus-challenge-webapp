@@ -18,7 +18,9 @@ chardet==3.0.4            # via -r base.txt, requests
 click==7.1.2              # via -r base.txt, flask
 contextlib2==0.6.0.post1  # via -r base.txt, schema
 cycler==0.10.0            # via -r base.txt, matplotlib
+dnspython==2.0.0          # via -r base.txt, email-validator
 docopt==0.6.2             # via -r base.txt, internetarchive
+email-validator==1.1.1    # via -r base.txt
 environs==8.0.0           # via -r base.txt
 factory-boy==3.0.1        # via -r dev.in
 faker==4.1.2              # via factory-boy
@@ -40,7 +42,7 @@ flask-pagedown==0.3.0     # via -r base.txt
 flask-sqlalchemy==2.4.4   # via -r base.txt, flask-migrate
 flask-wtf==0.14.3         # via -r base.txt
 flask==1.1.2              # via -r base.txt, flask-bcrypt, flask-caching, flask-debugtoolbar, flask-login, flask-mail, flask-migrate, flask-misaka, flask-pagedown, flask-sqlalchemy, flask-wtf
-idna==2.10                # via -r base.txt, requests
+idna==2.10                # via -r base.txt, email-validator, requests
 iniconfig==1.0.1          # via pytest
 internetarchive==1.9.4    # via -r base.txt
 isort==5.4.2              # via -r dev.in, flake8-isort
