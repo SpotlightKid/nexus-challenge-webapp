@@ -5,7 +5,7 @@
 from flask import Flask, render_template
 
 from . import commands, competition, public, user
-from .extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar, login_manager, mail,
+from .extensions import (bcrypt, cache, csrf_protect, db, login_manager, mail,
                          migrate, misaka, pagedown)
 from .utils import inject_site_info
 
@@ -61,7 +61,6 @@ def register_extensions(app):
     misaka.init_app(app)
     migrate.init_app(app, db)
     pagedown.init_app(app)
-    debug_toolbar.init_app(app)
 
 
 def register_blueprints(app):

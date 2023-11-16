@@ -1,7 +1,7 @@
 """empty message
 
 Revision ID: 93d1bcf523c6
-Revises: 
+Revises:
 Create Date: 2019-09-20 22:22:35.554997
 
 """
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=80), nullable=False),
     sa.Column('email', sa.String(length=80), nullable=False),
-    sa.Column('hashed_password', sa.Binary(), nullable=True),
+    sa.Column('hashed_password', sa.LargeBinary(), nullable=True),
     sa.Column('first_name', sa.String(length=30), nullable=True),
     sa.Column('last_name', sa.String(length=30), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),

@@ -15,7 +15,10 @@ Flask-Migrate
 Flask-Mail
 
 # Markdown filter & in-page editor
-Flask-Misaka
+#Flask-Misaka
+# patched version now included in app pkg as ext/flask_misaka.py
+# we do still need it's dependencies, though
+misaka
 Flask-PageDown
 
 # Forms
@@ -30,7 +33,7 @@ Flask-Bcrypt
 Flask-Caching>=1.0.0
 
 # Debug toolbar
-Flask-DebugToolbar
+#Flask-DebugToolbar
 
 # Environment variable parsing
 environs
